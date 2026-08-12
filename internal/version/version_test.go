@@ -16,6 +16,7 @@ func TestSelectCompilerVersion(t *testing.T) {
 		{name: "local build", linkerValue: developmentCompilerVersion, moduleVersion: "(devel)", want: developmentCompilerVersion},
 		{name: "missing build info", linkerValue: developmentCompilerVersion, moduleVersion: "", want: developmentCompilerVersion},
 		{name: "versioned go install", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0", want: "v1.0.0"},
+		{name: "beta launch install", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-beta.1", want: "v1.0.0-beta.1"},
 		{name: "versioned prerelease install", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-rc.1", want: "v1.0.0-rc.1"},
 		{name: "hyphenated prerelease install", linkerValue: developmentCompilerVersion, moduleVersion: "v1.2.3-beta-2", want: "v1.2.3-beta-2"},
 		{name: "pseudo version", linkerValue: developmentCompilerVersion, moduleVersion: "v0.0.0-20260811120000-0123456789ab", want: developmentCompilerVersion},
@@ -26,6 +27,9 @@ func TestSelectCompilerVersion(t *testing.T) {
 		{name: "build metadata", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0+build.1", want: developmentCompilerVersion},
 		{name: "leading zero release", linkerValue: developmentCompilerVersion, moduleVersion: "v01.0.0", want: developmentCompilerVersion},
 		{name: "leading zero numeric prerelease", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-rc.01", want: developmentCompilerVersion},
+		{name: "leading zero numeric beta identifier", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-beta.01", want: developmentCompilerVersion},
+		{name: "empty beta identifier", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-beta..1", want: developmentCompilerVersion},
+		{name: "beta linker override wins", linkerValue: "v1.0.0-beta.1", moduleVersion: "(devel)", want: "v1.0.0-beta.1"},
 		{name: "linker override wins", linkerValue: "v1.0.0-rc.1", moduleVersion: "v1.0.0", want: "v1.0.0-rc.1"},
 	}
 	for _, test := range tests {

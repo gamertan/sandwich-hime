@@ -7,55 +7,83 @@ accumulate features. The intended product is already visible: an HTML-first,
 ahead-of-time template engine for Go, typed generated components, a small
 HTTP-independent runtime, and an optional opinionated local development loop.
 
-The private development initiative lives on `codex/v1-launch` in
-`sandwich-hime-dev`. Public releases never originate from that private history.
+Development records may remain private, but their repository names, branch
+names, paths, commit mappings, and history are not release provenance. Public
+releases originate only from the reviewed canonical public tree.
 
 ## Repository and publication topology
 
 | Surface | Purpose | History and tags |
 | --- | --- | --- |
-| Private Gitea `sandwich-hime-dev` | development, working branches, private review records, and historical context | normal private history; no public release tags |
-| Public Gitea `sandwich-hime` | canonical sanitized source, contribution venue, module origin, releases, and signed tags | fresh reviewed publication history; authoritative `sando/vX.Y.Z` and `vX.Y.Z` tags |
-| GitHub `gamertan/sandwich-hime` | discoverability and a convenient sanitized source snapshot | no private refs, force-mirrors, workflows, contribution authority, release artifacts, or semver tags |
+| Private development storage | Working branches, private review records, and historical context | identities and history are not exported; no public release tags |
+| Public Gitea `sandwich-hime` | Canonical sanitized source, contribution venue, module origin, and releases | fresh reviewed history; authoritative immutable `sando/vX.Y.Z` and `vX.Y.Z` tags |
+| GitHub `gamertan/sandwich-hime` | Discoverability and a convenient sanitized source snapshot | no private refs, force-mirrors, workflows, contribution authority, release artifacts, or semver tags |
 
 Each public update is exported through the exact committed allowlist, inspected,
 committed as a fresh public snapshot, and compared byte-for-byte with the
-reviewed export. GitHub receives that public tree only. It never receives the
-private repository or an indiscriminate Git mirror.
+reviewed export. GitHub receives that public tree only. It never receives
+private history or an indiscriminate Git mirror.
 
 ## Current readiness
 
-At the 2026-08-12 v1 initiative baseline, the project is a strong engineering
-preview, but not yet a release candidate. Exact private/public commit mappings
-remain in the non-exported operational ledger.
+Beta 1 is deliberately earlier than a release candidate. It creates a real,
+repeatable install for learners and evaluators without claiming that the final
+v1 compatibility, native-platform, artifact, signing, or soak gates are
+complete.
 
-### Demonstrated now
+### Demonstrated in the pre-beta public baseline
 
-- race-enabled tests, vet, builds, deterministic generation, license checks,
-  and sanitized-export tests pass on Linux;
-- the compiler module and nested `sando` runtime declare zero third-party Go
-  module requirements;
-- generated/runtime compatibility uses a version-specific compile-time ABI
-  marker with an incompatible-runtime regression;
-- owned-output, orphan, stale, symlink, nested-module, restrictive-permission,
-  last-good, writer-error, and enumerated contextual-output cases are tested;
-- the development proxy is loopback-only, browser-origin hardened, and clears
-  a dead selected upstream immediately; and
-- the security policy, threat model, and dated evidence ledger state both the
-  demonstrated controls and the unresolved limits.
+Public commit `113c95c21e57227b4675c9fda015ada59cc9e9a6` (tree
+`a2aeb4dac22853cb3894e3e487b94bbeff5051e5`) passed maintainer-run Go
+1.25.12 and Go 1.26.5 matrices on native Windows/amd64, Linux/amd64 under WSL2,
+and isolated Linux/amd64 server containers. The same generated golden SHA-256
+was observed across those lanes.
+
+That result is a pre-beta baseline only. The exact Beta 1 candidate must rerun
+the required Windows/Linux matrix after all version, documentation, and source
+changes and before tags are created.
+
+Other demonstrated controls include:
+
+- zero third-party Go module requirements in the compiler and nested `sando`
+  runtime;
+- a version-specific compile-time runtime ABI marker;
+- owned-output, orphan, stale, symlink, nested-module, permission, last-good,
+  writer-error, and enumerated contextual-output tests;
+- loopback-only, browser-origin-hardened development proxy behavior; and
+- a public threat model, security policy, and dated evidence ledger.
 
 ### Not demonstrated yet
 
-- native Windows and macOS execution of the complete supported matrix;
-- a stable public API/CLI/schema snapshot and compatibility test;
+- native maintainer-run macOS execution; macOS is provisional for Beta 1;
+- stable final-v1 API, CLI, schema, diagnostic, and generated snapshots;
 - systematic browser-parser and `html/template` differential testing;
 - a long semantic fuzz campaign beyond bounded no-panic smoke;
-- committed, reproducible comparative benchmarks and a predefined regression
-  threshold;
-- real-browser SSE/reload/overlay evidence for `himesan dev`;
-- deterministic release artifacts, checksums, SBOMs, signatures, and tested
-  signing/recovery procedures; or
-- clean direct and public-proxy installation of signed release tags.
+- committed comparative benchmarks and predefined regression thresholds;
+- complete real-browser development-supervisor evidence;
+- deterministic prebuilt archives, checksums, SBOMs, signed binaries, and
+  tested signing/recovery procedures; or
+- clean direct and public-proxy installation of the not-yet-published Beta 1
+  tags.
+
+## Beta 1 publication lane
+
+Beta 1 is supported for learning, classroom projects, evaluation, prototypes,
+and compatibility feedback. It is not recommended as a production-stable
+dependency, and its interfaces may change.
+
+- [x] Define beta support, security, compatibility, and macOS-provisional
+  language.
+- [x] Establish the named public pre-beta Linux/Windows baseline.
+- [ ] Rerun the supported Go matrix and deterministic generation on the exact
+  Beta 1 candidate.
+- [ ] Run the candidate-version freshness, bounded fuzz, vulnerability, and
+  license gates.
+- [ ] Publish immutable `sando/v1.0.0-beta.1`, then
+  `v1.0.0-beta.1`, from the same reviewed public commit.
+- [ ] Verify clean direct and public-proxy installs and record the result.
+- [ ] Add native macOS maintainer evidence before RC; community reports inform
+  that work but do not replace maintainer responsibility.
 
 ## Milestone 1: contract freeze
 
@@ -126,8 +154,8 @@ Required before security/platform release-candidate work is declared complete:
 4. Run the complete evidence suite again from the exact public commit.
 5. Operate the official Sandwich Hime website on the RC runtime for a 14-day
    observation period with no unresolved Hime render, security, accessibility,
-   or rollback regression. This is product dogfooding, not a dependency on EQL
-   or another application's private repository.
+   or rollback regression. This is product dogfooding, not a dependency on
+   another application's private repository.
 6. Fix findings in a new RC; restart the observation period when the affected
    boundary warrants it.
 7. Finalize the changelog, supported-version table, migration notes, release
