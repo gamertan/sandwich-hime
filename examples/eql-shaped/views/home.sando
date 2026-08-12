@@ -1,0 +1,11 @@
+<?sando go
+package views
+
+func Home(view HomeView)
+?>
+<?# SPDX-License-Identifier: 0BSD ?>
+<section aria-labelledby="home-heading">
+  <h1 id="home-heading"><?= view.Heading ?></h1>
+  <p><?= view.Intro ?></p>
+  <?~ BrowseResults(view.Browse) ?>
+</section>

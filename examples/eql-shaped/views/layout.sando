@@ -1,0 +1,20 @@
+<?sando go
+package views
+
+func Layout(view LayoutView)
+?>
+<?# SPDX-License-Identifier: 0BSD ?>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><?= view.Title ?> · <?= view.SiteName ?></title>
+</head>
+<body>
+  <a href="#main">Skip to content</a>
+  <header><a href="/"><?= view.SiteName ?></a></header>
+  <main id="main"><?~ view.Body ?></main>
+  <footer>Built with Sandwich Hime.</footer>
+</body>
+</html>
