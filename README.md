@@ -2,6 +2,12 @@
 
 # Sandwich Hime
 
+> **Canonical project:** development, contribution and security instructions,
+> releases, and stewardship live on the
+> [founder-controlled Gamertan Gitea](https://gitea.speelman.ca/gamertan/sandwich-hime).
+> A GitHub copy, when present, is a read-only discovery snapshot rather than a
+> contribution or release authority.
+
 Sandwich Hime is an HTML-first, ahead-of-time template engine for Go. Hime-san
 keeps the direct, mixed-markup feeling of classic PHP while compiling trusted
 `.sando` templates into typed, deterministic Go components that an ordinary

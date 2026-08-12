@@ -18,8 +18,11 @@ Release candidates require a clean canonical checkout, reviewed changelog, compa
 
 Gitea is the only canonical public forge. Public source is exported into a
 separate, sanitized Gitea repository with fresh history; private development
-history and the private-to-public commit mapping are not published. Release
-binaries and provenance are built from the reviewed public commit. Compiler
+history and the private-to-public commit mapping are not published. A
+sanitized GitHub discovery snapshot may copy reviewed public source, but it is
+not an issue, contribution, release, or module origin and must never receive
+private development refs or an indiscriminate Git mirror. Release binaries and
+provenance are built from the reviewed canonical Gitea commit. Compiler
 documentation, binaries, checksums, SBOMs, and the independently versioned
 runtime tag form the coordinated v1 release. Example applications and product
 sites keep their own history, deployment, and evidence.

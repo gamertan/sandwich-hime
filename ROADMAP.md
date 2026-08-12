@@ -34,4 +34,5 @@ Unchecked items are release blockers, not aspirational marketing.
 - [ ] Name clearance, security mailbox, two-person credential recovery, and signing keys complete.
 - [ ] `gamertan.com` vanity-import metadata and documented installs verified from a clean machine.
 - [ ] Sanitized fresh-history public Gitea snapshot contains no private paths, identifiers, history, or unsupported release claims.
-- [ ] Canonical public Gitea source and project documentation launch with no secondary forge mirror.
+- [x] Canonical public Gitea source and project documentation launch, with any
+  secondary forge explicitly limited to a sanitized discovery snapshot.

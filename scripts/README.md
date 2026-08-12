@@ -18,4 +18,4 @@ The release preflight invokes `govulncheck` from the official Go vulnerability p
 
 Forge workflows are intentionally excluded from the sanitized pre-1.0 public snapshot until the project has confirmed its own Gitea runner availability and reviewed locally hosted or otherwise pinned dependencies. Local `verify.sh`, `verify.ps1`, license, and release-preflight results are the preview gates.
 
-If Gitea automation is later added to the public repository, pin every external action to a reviewed immutable commit, document its provenance, grant minimum permissions, and keep a local verification path. No secondary forge mirror or hosted workflow is planned.
+If Gitea automation is later added to the public repository, pin every external action to a reviewed immutable commit, document its provenance, grant minimum permissions, and keep a local verification path. A secondary forge may host a sanitized, read-only discovery snapshot, but hosted workflows stay disabled there and it does not become a release or contribution authority.
