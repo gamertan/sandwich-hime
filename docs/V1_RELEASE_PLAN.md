@@ -31,17 +31,14 @@ repeatable install for learners and evaluators without claiming that the final
 v1 compatibility, native-platform, artifact, signing, or soak gates are
 complete.
 
-### Demonstrated in the pre-beta public baseline
+### Demonstrated for Beta 1
 
-Public commit `113c95c21e57227b4675c9fda015ada59cc9e9a6` (tree
-`a2aeb4dac22853cb3894e3e487b94bbeff5051e5`) passed maintainer-run Go
+Public commit `b7a84054d755e42285e50298e41e47f06a8325a5` (tree
+`be9e118e38dfebed19f60403ededdadabe07d2aa`) passed maintainer-run Go
 1.25.12 and Go 1.26.5 matrices on native Windows/amd64, Linux/amd64 under WSL2,
-and isolated Linux/amd64 server containers. The same generated golden SHA-256
-was observed across those lanes.
-
-That result is a pre-beta baseline only. The exact Beta 1 candidate must rerun
-the required Windows/Linux matrix after all version, documentation, and source
-changes and before tags are created.
+with the earlier pre-beta server-container run retained only as supplementary
+Linux evidence. The same generated golden SHA-256 was observed across the exact
+Beta Windows and Linux lanes.
 
 Other demonstrated controls include:
 
@@ -63,8 +60,7 @@ Other demonstrated controls include:
 - complete real-browser development-supervisor evidence;
 - deterministic prebuilt archives, checksums, SBOMs, signed binaries, and
   tested signing/recovery procedures; or
-- clean direct and public-proxy installation of the not-yet-published Beta 1
-  tags.
+- native macOS installation of the published Beta 1 tags.
 
 ## Beta 1 publication lane
 
@@ -75,13 +71,14 @@ dependency, and its interfaces may change.
 - [x] Define beta support, security, compatibility, and macOS-provisional
   language.
 - [x] Establish the named public pre-beta Linux/Windows baseline.
-- [ ] Rerun the supported Go matrix and deterministic generation on the exact
+- [x] Rerun the supported Go matrix and deterministic generation on the exact
   Beta 1 candidate.
-- [ ] Run the candidate-version freshness, bounded fuzz, vulnerability, and
+- [x] Run the candidate-version freshness, bounded fuzz, vulnerability, and
   license gates.
-- [ ] Publish immutable `sando/v1.0.0-beta.1`, then
+- [x] Publish immutable `sando/v1.0.0-beta.1`, then
   `v1.0.0-beta.1`, from the same reviewed public commit.
-- [ ] Verify clean direct and public-proxy installs and record the result.
+- [x] Verify clean runtime-first direct and public-proxy installs and record the
+  result.
 - [ ] Add native macOS maintainer evidence before RC; community reports inform
   that work but do not replace maintainer responsibility.
 
