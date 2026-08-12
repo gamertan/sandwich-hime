@@ -4,11 +4,9 @@
 
 These scripts are intentionally understandable shell and PowerShell rather than a release framework with hidden defaults.
 
-- `verify.sh` runs root and nested-module tests and vet, builds `himesan`, tests each example module, checks committed generated output, and proves two generation passes leave the same bytes and unchanged modification times. Set `HIMESAN_RACE=1` for race tests.
+- `verify.sh` runs root and nested-module tests and vet, builds `himesan`, checks the compiler-owned golden output, and proves two generation passes leave the same bytes and unchanged modification times. Set `HIMESAN_RACE=1` for race tests.
 - `verify.ps1` provides the equivalent native Windows lane; pass `-Race` to include the race detector.
-- `check-licenses.sh` enforces the AGPL compiler / Apache runtime / 0BSD example boundary and prevents generated application Go from inheriting an AGPL identifier.
-- `check-site.sh` verifies vanity metadata, no-script/local-asset policy, pre-release honesty, and baseline accessibility scaffolding for the static site.
-- `eql-integration.sh` is opt-in. Until a repository-owned `internal/integration/eql` test exists it exits successfully without inspecting EQL. Later it requires external `HIMESAN_EQL_ROOT` and `HIMESAN_EQL_DB` paths and passes a read-only-mode contract to that package. It never copies a database.
+- `check-licenses.sh` enforces the AGPL compiler / Apache runtime boundary and prevents generated application Go from inheriting an AGPL identifier.
 - `release-check.sh --version vX.Y.Z` is a clean-checkout technical preflight. Add `--public` and point `HIMESAN_RELEASE_EVIDENCE_DIR` at a human-reviewed evidence bundle for the public-launch gate. It never tags, pushes, publishes, or deploys.
 - `verify-public-install.sh --version vX.Y.Z` is a post-tag/publication check. It verifies exact `go-get=1` package routes and runs the documented compiler install and runtime get from fresh direct-fetch and public-proxy caches without interactive Git credentials.
 

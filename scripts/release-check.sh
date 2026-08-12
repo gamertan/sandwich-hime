@@ -64,7 +64,7 @@ case "$origin_url" in
 	https://gitea.speelman.ca/gamertan/sandwich-hime.git)
 		;;
 	*)
-		printf 'error: origin is not the canonical Gamertan Gitea repository: %s\n' "$origin_url" >&2
+		printf 'error: origin is not the canonical Gitea repository: %s\n' "$origin_url" >&2
 		exit 1
 		;;
 esac
@@ -131,9 +131,6 @@ for target in \
 done
 
 for required in \
-	site/index.html \
-	site/sando/index.html \
-	site/README.md \
 	scripts/verify-public-install.sh \
 	RELEASE.md \
 	SECURITY.md \
@@ -142,11 +139,6 @@ for required in \
 	[[ -f "$required" ]] || { printf 'error: required release file is missing: %s\n' "$required" >&2; exit 1; }
 done
 
-if ! grep -Fq 'gamertan.com/sandwich-hime/sando git' site/sando/index.html; then
-	printf 'error: nested runtime vanity-import metadata is missing\n' >&2
-	exit 1
-fi
-
 if (( public_release == 1 )); then
 	evidence_dir=${HIMESAN_RELEASE_EVIDENCE_DIR:-}
 	if [[ -z "$evidence_dir" || ! -d "$evidence_dir" ]]; then
@@ -154,18 +146,18 @@ if (( public_release == 1 )); then
 		exit 1
 	fi
 	for evidence in \
-		counsel-review.md \
+		legal-review.md \
 		cross-platform.md \
-		eql-production-soak.md \
-		security-and-accessibility.md \
+		security.md \
+		development-supervisor.md \
 		benchmark-methodology.md \
-		vanity-and-mirror.md; do
+		vanity-imports.md \
+		signing-and-recovery.md; do
 		if [[ ! -s "$evidence_dir/$evidence" ]]; then
 			printf 'error: public release evidence is missing or empty: %s\n' "$evidence_dir/$evidence" >&2
 			exit 1
 		fi
 	done
-	./scripts/check-site.sh --public "$version"
 	printf '\nHuman review is still required; evidence presence is not automatic approval.\n'
 else
 	printf '\nTechnical preflight passed. Public launch remains blocked until --public evidence review passes.\n'

@@ -43,12 +43,11 @@ function Invoke-ModuleChecks {
 }
 
 function Get-SandoSources {
-    if (-not (Test-Path "examples" -PathType Container)) {
+    if (-not (Test-Path "internal/compiler/testdata/golden" -PathType Container)) {
         return @()
     }
 
-    return @(Get-ChildItem "examples" -Recurse -File -Filter "*.sando" |
-        Where-Object { $_.FullName -notmatch '[\\/](vendor|\.git)[\\/]' } |
+    return @(Get-ChildItem "internal/compiler/testdata/golden" -File -Filter "*.sando" |
         Sort-Object FullName)
 }
 
@@ -80,29 +79,20 @@ try {
     }
     Invoke-ModuleChecks "sando" "sando runtime module"
 
-    if (Test-Path "examples" -PathType Container) {
-        $ExampleModules = @(Get-ChildItem "examples" -Recurse -File -Filter "go.mod" |
-            Where-Object { $_.FullName -notmatch '[\\/](vendor|\.git)[\\/]' } |
-            Sort-Object FullName)
-    }
-    else {
-        $ExampleModules = @()
-    }
-
     $Sources = @(Get-SandoSources)
     if ($Sources.Count -eq 0) {
-        Write-Host "`n==> generation: no .sando examples exist yet; skipping deterministic-generation check"
+        throw "compiler-owned golden .sando fixture is missing"
     }
     else {
         $SourcePaths = @($Sources | ForEach-Object { $_.FullName })
         $CheckArgs = @("run", "./cmd/himesan", "check") + $SourcePaths
         $GenerateArgs = @("run", "./cmd/himesan", "generate") + $SourcePaths
-        Invoke-Checked "generation: read-only freshness check" {
+        Invoke-Checked "golden generation: read-only freshness check" {
             & go $CheckArgs
         }
         $Before = Get-GeneratedManifest
 
-        Invoke-Checked "generation: first deterministic pass" {
+        Invoke-Checked "golden generation: first deterministic pass" {
             & go $GenerateArgs
         }
         $First = Get-GeneratedManifest
@@ -110,7 +100,7 @@ try {
             throw "generation changed committed output after check declared it fresh"
         }
 
-        Invoke-Checked "generation: second deterministic pass" {
+        Invoke-Checked "golden generation: second deterministic pass" {
             & go $GenerateArgs
         }
         $Second = Get-GeneratedManifest
@@ -118,19 +108,8 @@ try {
             throw "repeated generation changed output bytes or an unchanged timestamp"
         }
 
-        Invoke-Checked "generation: final freshness check" {
+        Invoke-Checked "golden generation: final freshness check" {
             & go $CheckArgs
-        }
-    }
-
-    # Do not execute generated application code until check and both generation
-    # passes prove that it is compiler-owned, current, and deterministic.
-    if ($ExampleModules.Count -eq 0) {
-        Write-Host "`n==> examples: no example module exists yet; skipping module tests"
-    }
-    else {
-        foreach ($module in $ExampleModules) {
-            Invoke-ModuleChecks $module.Directory.FullName "example module $($module.Directory.FullName)"
         }
     }
 

@@ -36,22 +36,18 @@ request object, or production server.
 
 ## Status
 
-This repository is an unsupported public pre-1.0 source preview, not a supported v1 release. EQL Wiki remains the proof-of-production proving ground, and v1 is gated on security testing, cross-platform determinism, and a 14-day production soak with no renderer, security, or accessibility regression.
-
-[sandwichhime.com](https://sandwichhime.com/) is the running self-hosted proof:
-its pages begin as `.sando`, compile into ordinary Go, and ship in an ordinary
-Go service whose production binary links only the `sando` runtime—not this
-compiler.
+This repository is an unsupported public pre-1.0 source preview, not a
+supported v1 release. V1 is gated only by repository-owned compiler, runtime,
+security, compatibility, and release checks. Application-specific deployments,
+examples, and case studies live in their own repositories and are not imported
+as release evidence here.
 
 For repository development:
 
 ```sh
 go install ./cmd/himesan
-himesan generate ./examples/eql-shaped
-himesan check ./examples/eql-shaped
-go test ./...
-(cd sando && go test ./...)
-(cd examples/eql-shaped && himesan dev --config himesan.json)
+./scripts/verify.sh
+./scripts/check-licenses.sh
 ```
 
 The portable path is `generate`, `check`, and the project's normal Go tools.
@@ -123,5 +119,7 @@ participation does not confer ownership of the identity or project.
 
 The fuller origin, Japanese craft inspirations, family dedication, human-art
 commitment, and stewardship boundary live on the
-[project site](https://sandwichhime.com/docs/project/). Performance claims will
-follow published measurements, never precede them.
+[project site](https://sandwichhime.com/docs/project/). Tutorials and copyable
+applications are maintained separately from this compiler repository.
+Performance claims will follow repository-owned measurements, never precede
+them.

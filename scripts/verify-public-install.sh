@@ -7,7 +7,7 @@ usage() {
 	cat <<'EOF'
 Usage: scripts/verify-public-install.sh --version vX.Y.Z
 
-Post-publication verification for Gamertan vanity metadata and the exact
+Post-publication verification for gamertan.com vanity metadata and the exact
 documented install commands. It uses fresh temporary Go caches and never writes
 to the repository. Signed compiler and sando tags must already be public.
 EOF

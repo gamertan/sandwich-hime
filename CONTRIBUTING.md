@@ -2,7 +2,11 @@
 
 # Contributing
 
-The canonical public project and only contribution venue is the Gamertan Gitea repository. Repository maintainers may temporarily disable issue or patch intake during the pre-1.0 preview; do not route around a closed intake channel by sending unsolicited private patches.
+The canonical public project and only contribution venue is the
+[founder-controlled Gitea repository](https://gitea.speelman.ca/gamertan/sandwich-hime).
+Repository maintainers may temporarily disable issue or patch intake during the
+pre-1.0 preview; do not route around a closed intake channel by sending
+unsolicited private patches.
 
 Public pre-1.0 contributions use Developer Certificate of Origin 1.1 sign-off. The proposed `CLA.md` is an inactive draft, is not a condition of contribution, and creates no contributor or project obligations. If a contribution agreement is ever activated after legal review, the project will announce its prospective terms rather than silently applying the draft.
 
@@ -13,10 +17,10 @@ go test ./...
 go test -race ./...
 go vet ./...
 (cd sando && go test -race ./... && go vet ./...)
-go run ./cmd/himesan check ./examples/eql-shaped
+./scripts/check-licenses.sh
 ```
 
-Changes require focused tests, stable diagnostics, formatted generated goldens when applicable, documentation for public behavior, and a signed-off commit (`git commit -s`). The sign-off certifies the [DCO](DCO.txt); it is not a copyright assignment or acceptance of the inactive CLA. Do not commit an EQL database, production data, secrets, build candidates, or developer cache files.
+Changes require focused tests, stable diagnostics, formatted generated goldens when applicable, documentation for public behavior, and a signed-off commit (`git commit -s`). The sign-off certifies the [DCO](DCO.txt); it is not a copyright assignment or acceptance of the inactive CLA. Do not commit production data, private application fixtures, secrets, build candidates, or developer cache files.
 
 The project requires no copyright assignment. Ownership remains determined by applicable law and any employer or other agreement. Contributors submit each file under the license identified for that repository area, and the DCO records their certification that they have the right to do so. Material AI assistance must follow [AI_CONTRIBUTIONS.md](AI_CONTRIBUTIONS.md). Review considers provenance, safety, maintenance cost, compatibility, and fit—not just whether code passes tests.
 

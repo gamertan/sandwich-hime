@@ -1,7 +1,0 @@
-<?sando go
-package views
-
-func Badge(label string)
-?>
-<?# SPDX-License-Identifier: 0BSD ?>
-<strong class="badge"><?= label ?></strong>

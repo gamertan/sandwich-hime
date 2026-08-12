@@ -1,9 +1,0 @@
-{
-  "version": 1,
-  "sourceRoots": ["views"],
-  "goPackage": "./cmd/example",
-  "listenAddressEnv": "HIMESAN_LISTEN_ADDR",
-  "healthPath": "/healthz",
-  "proxyAddress": "127.0.0.1:7331",
-  "additionalWatchRoots": []
-}

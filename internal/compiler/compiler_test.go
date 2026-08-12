@@ -63,10 +63,9 @@ func TestCommittedGoldenOutput(t *testing.T) {
 	if !ok {
 		t.Fatal("runtime.Caller failed")
 	}
-	root := filepath.Clean(filepath.Join(filepath.Dir(thisFile), "..", ".."))
-	sourcePath := filepath.Join(root, "examples", "eql-shaped", "views", "badge.sando")
+	sourcePath := filepath.Join(filepath.Dir(thisFile), "testdata", "golden", "basic.sando")
 	wantPath := sourcePath + ".go"
-	compiled, diagnostics := compileWithMapping(sourcePath, mustRead(t, sourcePath), "views/badge.sando")
+	compiled, diagnostics := compileWithMapping(sourcePath, mustRead(t, sourcePath), "internal/compiler/testdata/golden/basic.sando")
 	assertNoErrorDiagnostics(t, diagnostics)
 	if want := mustRead(t, wantPath); !bytes.Equal(compiled.Code, want) {
 		t.Fatalf("committed golden output is stale; run himesan generate\n--- got ---\n%s\n--- want ---\n%s", compiled.Code, want)

@@ -15,9 +15,6 @@ fail() {
 
 expected_spdx() {
 	case "$1" in
-		examples/*)
-			printf '0BSD\n'
-			;;
 		sando/*)
 			printf 'Apache-2.0\n'
 			;;
@@ -77,7 +74,6 @@ list_project_files() {
 
 [[ -f LICENSE ]] || fail 'root LICENSE is missing'
 [[ -f sando/LICENSE ]] || fail 'sando/LICENSE is missing'
-[[ -f examples/eql-shaped/LICENSE ]] || fail 'example LICENSE is missing'
 [[ -f DCO.txt ]] || fail 'DCO.txt is missing'
 
 if [[ -f LICENSE ]]; then
@@ -86,16 +82,11 @@ fi
 if [[ -f sando/LICENSE ]]; then
 	check_sha256 sando/LICENSE c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4
 fi
-if [[ -f examples/eql-shaped/LICENSE ]]; then
-	check_sha256 examples/eql-shaped/LICENSE 7e2406acc98391ec126b13d512c00b930bbc2c19f4d5b0fe52286ae41bfbc92d
-	grep -Fq 'Copyright (c) 2025-2026 Cole Speelman' examples/eql-shaped/LICENSE || \
-		fail 'example LICENSE must identify its original author'
-fi
 if [[ -f DCO.txt ]]; then
 	check_sha256 DCO.txt f7ac75b443f4ca16b503241344b41aeff9503b0c30bedc2b119551d83cb0fa90
 fi
 
-for required in COPYRIGHT OUTPUT_EXCEPTION.md sando/COPYRIGHT examples/eql-shaped/LICENSES.md; do
+for required in COPYRIGHT OUTPUT_EXCEPTION.md sando/COPYRIGHT; do
 	[[ -f $required ]] || fail "$required is required for ownership/output licensing"
 done
 
@@ -126,7 +117,7 @@ while IFS= read -r -d '' path; do
 	[[ -f $path ]] || continue
 
 	case "$path" in
-		LICENSE | sando/LICENSE | examples/*/LICENSE | DCO.txt)
+		LICENSE | sando/LICENSE | DCO.txt)
 			# These are reviewed legal texts with their own notices.
 			continue
 			;;
@@ -161,9 +152,7 @@ while IFS= read -r -d '' path; do
 			continue
 			;;
 		*.json)
-			if [[ $path != examples/eql-shaped/himesan.json ]]; then
-				fail "$path cannot carry a comment and needs an explicit license-map entry"
-			fi
+			fail "$path cannot carry a comment and needs an explicit license-map entry"
 			continue
 			;;
 	esac
@@ -177,23 +166,6 @@ while IFS= read -r -d '' path; do
 	has_exact_spdx "$path" "$expected" || \
 		fail "$path must carry exactly one SPDX identifier: $expected"
 done < <(list_project_files)
-
-if [[ -f examples/eql-shaped/LICENSES.md ]]; then
-	grep -Fq '`himesan.json`' examples/eql-shaped/LICENSES.md || \
-		fail 'example license map must cover himesan.json'
-	grep -Fq '`.sando.go`' examples/eql-shaped/LICENSES.md || \
-		fail 'example license map must cover generated output'
-fi
-
-if [[ -d examples ]] && find examples -type f -name go.mod -print -quit | grep -q .; then
-	while IFS= read -r -d '' module_file; do
-		module_dir=$(dirname -- "$module_file")
-		license_file=$module_dir/LICENSE
-		map_file=$module_dir/LICENSES.md
-		[[ -f $license_file ]] || fail "example module $module_dir needs a local 0BSD LICENSE"
-		[[ -f $map_file ]] || fail "example module $module_dir needs a local license map"
-	done < <(find examples -type d \( -name .git -o -name vendor \) -prune -o -type f -name go.mod -print0)
-fi
 
 if find sando -type f -name '*.go' -exec grep -En \
 	'"gamertan\.com/sandwich-hime/(cmd|internal)(/|"|$)' {} + | grep -q .; then

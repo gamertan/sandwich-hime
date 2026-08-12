@@ -27,22 +27,9 @@ run_module_checks() {
 	)
 }
 
-example_sources() {
-	if [[ ! -d examples ]]; then
-		return 0
-	fi
-	find examples \
-		-type d \( -name .git -o -name vendor \) -prune -o \
+golden_sources() {
+	find internal/compiler/testdata/golden \
 		-type f -name '*.sando' -print | LC_ALL=C sort
-}
-
-example_modules() {
-	if [[ ! -d examples ]]; then
-		return 0
-	fi
-	find examples \
-		-type d \( -name .git -o -name vendor \) -prune -o \
-		-type f -name go.mod -print | LC_ALL=C sort
 }
 
 generated_manifest() {
@@ -68,7 +55,7 @@ generated_manifest() {
 			modified=$(stat -f '%m' -- "$output")
 		fi
 		printf '%s  %s  %s\n' "$digest" "$modified" "$output"
-	done < <(example_sources)
+	done < <(golden_sources)
 }
 
 log "repository scripts: shell syntax"
@@ -92,18 +79,16 @@ if [[ ! -f sando/go.mod ]]; then
 fi
 run_module_checks sando "sando runtime module"
 
-log "static project site"
-./scripts/check-site.sh
-
 sources=()
 while IFS= read -r source; do
 	[[ -n "$source" ]] || continue
 	sources[${#sources[@]}]=$source
-done < <(example_sources)
+done < <(golden_sources)
 if (( ${#sources[@]} == 0 )); then
-	log "generation: no .sando examples exist yet; skipping deterministic-generation check"
+	printf 'error: compiler-owned golden .sando fixture is missing\n' >&2
+	exit 1
 else
-	log "generation: read-only freshness check"
+	log "golden generation: read-only freshness check"
 	go run ./cmd/himesan check "${sources[@]}"
 
 	manifest_before="$build_dir/generated-before.txt"
@@ -111,7 +96,7 @@ else
 	manifest_second="$build_dir/generated-second.txt"
 	generated_manifest >"$manifest_before"
 
-	log "generation: first deterministic pass"
+	log "golden generation: first deterministic pass"
 	go run ./cmd/himesan generate "${sources[@]}"
 	generated_manifest >"$manifest_first"
 	if ! cmp -s "$manifest_before" "$manifest_first"; then
@@ -120,7 +105,7 @@ else
 		exit 1
 	fi
 
-	log "generation: second deterministic pass"
+	log "golden generation: second deterministic pass"
 	go run ./cmd/himesan generate "${sources[@]}"
 	generated_manifest >"$manifest_second"
 	if ! cmp -s "$manifest_first" "$manifest_second"; then
@@ -130,19 +115,6 @@ else
 	fi
 
 	go run ./cmd/himesan check "${sources[@]}"
-fi
-
-# Generated application code is not executed until the read-only freshness
-# check and both deterministic passes prove it is compiler-owned and current.
-module_count=0
-while IFS= read -r module_file; do
-	[[ -n "$module_file" ]] || continue
-	module_count=$((module_count + 1))
-	module_dir=$(dirname -- "$module_file")
-	run_module_checks "$module_dir" "example module $module_dir"
-done < <(example_modules)
-if (( module_count == 0 )); then
-	log "examples: no example module exists yet; skipping module tests"
 fi
 
 if [[ "${HIMESAN_RACE:-0}" == 1 ]]; then

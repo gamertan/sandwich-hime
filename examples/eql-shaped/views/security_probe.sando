@@ -1,7 +1,0 @@
-<?sando go
-package views
-
-func SecurityProbe(url string, title string, text string)
-?>
-<?# SPDX-License-Identifier: 0BSD ?>
-<a href="<?= url ?>" title="<?= title ?>"><?= text ?></a>
