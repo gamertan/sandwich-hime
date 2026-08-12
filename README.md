@@ -119,7 +119,11 @@ participation does not confer ownership of the identity or project.
 
 The fuller origin, Japanese craft inspirations, family dedication, human-art
 commitment, and stewardship boundary live on the
-[project site](https://sandwichhime.com/docs/project/). Tutorials and copyable
-applications are maintained separately from this compiler repository.
+[project site](https://sandwichhime.com/docs/project/). The official
+[step-by-step lesson](https://sandwichhime.com/docs/tutorial/) lives with that
+documentation, and its
+[0BSD runnable companion](https://gitea.speelman.ca/gamertan/sandwich-hime-tutorial)
+has a separate repository and history. Tutorials and copyable applications are
+maintained separately from this compiler repository.
 Performance claims will follow repository-owned measurements, never precede
 them.
