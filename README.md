@@ -2,7 +2,10 @@
 
 # Sandwich Hime
 
-Sandwich Hime (Hime-san) is an HTML-first component compiler for Go. It keeps the direct, mixed-markup feeling of classic PHP while producing typed, deterministic Go that an ordinary `go build` can audit and deploy.
+Sandwich Hime is an HTML-first, ahead-of-time template engine for Go. Hime-san
+keeps the direct, mixed-markup feeling of classic PHP while compiling trusted
+`.sando` templates into typed, deterministic Go components that an ordinary
+`go build` can audit and deploy.
 
 ```sando
 <?sando go
@@ -24,11 +27,21 @@ The generated API is ordinary Go:
 func Profile(page ProfileView) sando.Component
 ```
 
-Hime-san is a development tool, not an application framework. A consuming project keeps its `.sando` sources, commits the adjacent `.sando.go` output, and imports only the small Apache-2.0 `sando` runtime. Hime-san never owns the router, middleware, layout policy, request object, or production server.
+Templates are what authors write. Components are the typed output and
+composition unit. Hime-san is an intentionally opinionated development tool,
+not an application framework: a consuming project keeps its `.sando` sources,
+commits the adjacent `.sando.go` output, and imports only the small Apache-2.0
+`sando` runtime. Hime-san never owns the router, middleware, layout policy,
+request object, or production server.
 
 ## Status
 
 This repository is an unsupported public pre-1.0 source preview, not a supported v1 release. EQL Wiki remains the proof-of-production proving ground, and v1 is gated on security testing, cross-platform determinism, and a 14-day production soak with no renderer, security, or accessibility regression.
+
+[sandwichhime.com](https://sandwichhime.com/) is the running self-hosted proof:
+its pages begin as `.sando`, compile into ordinary Go, and ship in an ordinary
+Go service whose production binary links only the `sando` runtime—not this
+compiler.
 
 For repository development:
 
@@ -41,10 +54,13 @@ go test ./...
 (cd examples/eql-shaped && himesan dev --config himesan.json)
 ```
 
-The example's development server remains the application's own `net/http`
-program. Hime-san builds it in the user cache, health-checks a random loopback
-upstream, and serves the last healthy candidate through
-`http://127.0.0.1:7331` with local-only reload diagnostics.
+The portable path is `generate`, `check`, and the project's normal Go tools.
+For people who want the paved road, `himesan dev` deliberately does more: it
+builds the application's own `net/http` program in the user cache,
+health-checks a random loopback candidate, preserves the last healthy process,
+and serves it through `http://127.0.0.1:7331` with local-only reload
+diagnostics. That is a Cole-shaped convenience, not a production server or a
+requirement. Take the paved path—or don't.
 
 The eventual versioned installs are:
 
@@ -57,12 +73,12 @@ Those vanity paths must not be advertised as working until the corresponding sig
 
 ## The contract
 
-- One typed component per `.sando` file.
+- One typed template, compiled into one component constructor, per `.sando` file.
 - Go statements are trusted source code; rendered values are untrusted.
 - `<?= ... ?>` escapes for the statically known HTML context.
 - `<?~ ... ?>` composes another component and propagates errors.
 - Ambiguous or unsupported HTML contexts fail compilation.
-- Generation is deterministic, formatted, atomic, and never edits handwritten Go or `go.mod`.
+- Generation is deterministic and formatted; each owned output is replaced atomically, and handwritten Go and `go.mod` are never edited.
 - `check` is read-only and detects invalid or stale generated output.
 - Production builds need no compiler binary.
 
@@ -83,4 +99,29 @@ The project is never marketed as bare “Hime”; that name is already used by a
 
 ## Why
 
-This is a love letter to hand-built web development: the immediacy of a 2004 personal site, with typed interfaces, reproducible builds, modern contextual safety, and boring production operations. Performance claims will follow published measurements, never precede them.
+This is a love letter to hand-built web development: the immediacy of Cole's
+2004 Geocities page for a PSO Gameclub, with typed interfaces, reproducible
+builds, modern contextual safety, and boring production operations. The first
+prototype was a wonderfully cursed princess that could `bless` or `rebuke`
+templates, announced when Hime-san was resting, and concluded that creating a
+compiler was not hubris but destiny. The jokes stayed because developer joy is
+part of the point. The security boundary grew up because care is part of the
+point too.
+
+Cole builds with ADHD, neurodivergence, a disabled body, finite energy, and a
+family he wants to leave understandable work for. Clear files, calm defaults,
+accessible documentation, last-good development builds, and honest limitations
+are therefore operating requirements—not decorative empathy. The project aims
+to leave room for individuals, tiny teams, learners, disabled people, and
+anyone too small to win a complexity contest.
+
+Open source permits corporate use. Independence comes instead from the
+AGPL-3.0-only compiler, the Apache-2.0 runtime, application-owned generated
+output, contributor-held copyright, founder-led governance, release-key
+control, and careful trademark stewardship. Companies may use and contribute;
+participation does not confer ownership of the identity or project.
+
+The fuller origin, Japanese craft inspirations, family dedication, human-art
+commitment, and stewardship boundary live on the
+[project site](https://sandwichhime.com/docs/project/). Performance claims will
+follow published measurements, never precede them.

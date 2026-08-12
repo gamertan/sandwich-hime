@@ -134,6 +134,13 @@ while IFS= read -r -d '' path; do
 			# Cryptographic dependency records are externally covered data.
 			continue
 			;;
+		private/*.png | private/**/*.png)
+			# A tracked private binary needs an exact entry in the private map.
+			# The map and material remain outside reviewed public snapshots.
+			grep -Fq "\`$path\`" private/LICENSES.md || \
+				fail "$path needs an exact private license-map entry"
+			continue
+			;;
 		PUBLIC-SNAPSHOT.json | PUBLIC-SNAPSHOT.sha256)
 			# Generated factual provenance; covered by LICENSES.md.
 			continue
