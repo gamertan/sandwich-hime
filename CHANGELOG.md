@@ -27,24 +27,29 @@ not a production-stability promise.
 - Public beta support policy for evaluation and classroom use, including a
   provisional macOS lane and a community compatibility-reporting path.
 
-### Pre-beta verification baseline
+### Release verification
 
-Maintainer-run Linux and native Windows matrices passed on public commit
-`113c95c21e57227b4675c9fda015ada59cc9e9a6` (tree
-`a2aeb4dac22853cb3894e3e487b94bbeff5051e5`) with Go 1.25.12 and Go
-1.26.5. The tested golden output had the same SHA-256 on each tested host:
+The exact public Beta 1 commit
+`b7a84054d755e42285e50298e41e47f06a8325a5` (tree
+`be9e118e38dfebed19f60403ededdadabe07d2aa`) passed maintainer-run
+executed Linux and native Windows matrices with Go 1.25.12 and Go 1.26.5. The
+tested golden output had the same SHA-256 on each tested host:
 `63fa75a3049a3a8a12d769d7f9b6b510dfe763baacf706775b75cef2c57a984f`.
 
-That commit is a pre-beta baseline, not evidence for the later Beta 1 commit.
-The required matrix must be rerun from the exact candidate before its tags are
-published. Native macOS execution remains pending and is explicitly provisional
-for this beta.
+The complete release preflight passed, including race tests, bounded parser
+fuzz smoke, known-vulnerability analysis of both zero-third-party-dependency
+modules, candidate-version provenance, and six cross-builds. The signed runtime
+and compiler tags were published in that order. Fresh direct and public-proxy
+runtime-first installs passed after normal proxy propagation. Native macOS
+execution remains pending and is explicitly provisional for this beta.
 
 ### Known limitations
 
 - Source syntax, generated format, CLI details, and runtime API may change
   before final v1.
 - Native macOS behavior has not yet been maintainer-validated.
+- In a shared fresh Go module cache, add the nested `sando` runtime before
+  installing the parent compiler module at the same Beta 1 version.
 - Prebuilt binary artifacts, checksums, SBOMs, reproducible archives,
   key-recovery rehearsal, systematic browser differential, long fuzz,
   benchmark, and final compatibility gates remain work toward the release

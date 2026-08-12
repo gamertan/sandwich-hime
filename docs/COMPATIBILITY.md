@@ -36,25 +36,25 @@ Beta 1 targets Go 1.25 and Go 1.26. Support is based on point-in-time,
 maintainer-run release matrices, not an implication of continuous CI coverage.
 A Go support change is announced in release notes before it takes effect.
 
-The current public evidence is a **pre-beta baseline** on commit
-`113c95c21e57227b4675c9fda015ada59cc9e9a6` (tree
-`a2aeb4dac22853cb3894e3e487b94bbeff5051e5`):
+The current public evidence is the exact Beta 1 source at commit
+`b7a84054d755e42285e50298e41e47f06a8325a5` (tree
+`be9e118e38dfebed19f60403ededdadabe07d2aa`):
 
 | Platform | Go lanes | Maintainer-run result |
 | --- | --- | --- |
 | Windows 11/amd64 on NTFS | 1.25.12, 1.26.5 | Native tests, race, vet, builds, generation, process cleanup, watcher boundaries, and temporary consumer compilation passed; privileged symlink and POSIX-only permission cases were not exercised |
 | Linux/amd64 on WSL2 with an ext4 checkout | 1.25.12, 1.26.5 | Tests, race, vet, builds, generation, focused filesystem/development cases, and license checks passed |
-| Linux/amd64 in isolated containers on a Linux server | 1.25.12, 1.26.5 | Tests, race, vet, builds, deterministic generation, and license checks passed |
+| Linux/amd64 in isolated containers on a Linux server | 1.25.12, 1.26.5 | The earlier pre-beta baseline passed tests, race, vet, builds, deterministic generation, and license checks; this was not rerun on the exact Beta 1 commit |
 | macOS | — | Native maintainer validation pending; provisional for Beta 1 |
 
 The golden generated file had SHA-256
 `63fa75a3049a3a8a12d769d7f9b6b510dfe763baacf706775b75cef2c57a984f`
 on every tested Windows and Linux lane.
 
-Because the Beta 1 candidate contains changes after that public baseline, the
-complete Windows/Linux matrix must be rerun on the exact candidate before the
-tags are published. The baseline does not become beta evidence merely because
-its code is nearby in history.
+The signed Beta tags and fresh direct/public-proxy installation were verified
+after publication. For Beta 1, add the nested runtime to an application module
+before installing the parent compiler at the same version; this avoids a Go
+module-cache path-selection ambiguity observed in the reverse order.
 
 ## macOS feedback
 

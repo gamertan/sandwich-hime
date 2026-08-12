@@ -17,11 +17,12 @@ it is not a production-stability promise.
 - [x] Establish a public pre-beta Linux/Windows matrix on Go 1.25 and Go 1.26.
 - [x] Document macOS as provisional and invite useful community reports while
   retaining maintainer responsibility for security and releases.
-- [ ] Rerun all required Windows/Linux checks and deterministic generation on
+- [x] Rerun all required Windows/Linux checks and deterministic generation on
   the exact Beta 1 candidate.
-- [ ] Publish immutable `sando/v1.0.0-beta.1`, then
+- [x] Publish immutable `sando/v1.0.0-beta.1`, then
   `v1.0.0-beta.1`, from the reviewed public commit.
-- [ ] Verify clean direct and public-proxy installs after publication.
+- [x] Verify clean runtime-first direct and public-proxy installs after
+  publication.
 - [ ] Complete native macOS maintainer validation. This is an RC/final gate,
   not a Beta 1 gate.
 

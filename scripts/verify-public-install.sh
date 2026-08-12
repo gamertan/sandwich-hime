@@ -103,6 +103,7 @@ fi
 scratch_dir=$(mktemp -d "${TMPDIR:-/tmp}/himesan-public-install.XXXXXXXX")
 cleanup() {
 	if [[ -n "${scratch_dir:-}" && -d "$scratch_dir" ]]; then
+		chmod -R u+w -- "$scratch_dir" 2>/dev/null || true
 		rm -rf -- "$scratch_dir"
 	fi
 }
@@ -116,7 +117,29 @@ run_install_pair() {
 	local installed_binary installed_version go_executable_suffix
 	mkdir -p "$mode_dir/gopath" "$mode_dir/modcache" "$mode_dir/buildcache" "$mode_dir/consumer"
 
-	printf '\n==> %s clean-cache install\n' "$mode"
+	printf '\n==> %s clean-cache runtime then compiler install\n' "$mode"
+	(
+		cd "$mode_dir/consumer"
+		go mod init example.invalid/himesan-public-install >/dev/null
+		env \
+			GIT_TERMINAL_PROMPT=0 \
+			GIT_CONFIG_NOSYSTEM=1 \
+			GIT_CONFIG_GLOBAL=/dev/null \
+			GIT_ASKPASS="$false_command" \
+			SSH_ASKPASS="$false_command" \
+			GOPATH="$mode_dir/gopath" \
+			GOMODCACHE="$mode_dir/modcache" \
+			GOCACHE="$mode_dir/buildcache" \
+			GOPROXY="$proxy" \
+			GOPRIVATE= \
+			GONOPROXY=none \
+			GONOSUMDB="$no_sum_db" \
+			GOSUMDB=sum.golang.org \
+			GOINSECURE= \
+			GOAUTH=off \
+			go get "gamertan.com/sandwich-hime/sando@$version"
+	)
+
 	env \
 		GIT_TERMINAL_PROMPT=0 \
 		GIT_CONFIG_NOSYSTEM=1 \
@@ -154,28 +177,6 @@ EOF
 		printf 'error: generated provenance did not record installed compiler version %s\n' "$version" >&2
 		exit 1
 	fi
-
-	(
-		cd "$mode_dir/consumer"
-		go mod init example.invalid/himesan-public-install >/dev/null
-		env \
-			GIT_TERMINAL_PROMPT=0 \
-			GIT_CONFIG_NOSYSTEM=1 \
-			GIT_CONFIG_GLOBAL=/dev/null \
-			GIT_ASKPASS="$false_command" \
-			SSH_ASKPASS="$false_command" \
-			GOPATH="$mode_dir/gopath" \
-			GOMODCACHE="$mode_dir/modcache" \
-			GOCACHE="$mode_dir/buildcache" \
-			GOPROXY="$proxy" \
-			GOPRIVATE= \
-			GONOPROXY=none \
-			GONOSUMDB="$no_sum_db" \
-			GOSUMDB=sum.golang.org \
-			GOINSECURE= \
-			GOAUTH=off \
-			go get "gamertan.com/sandwich-hime/sando@$version"
-	)
 }
 
 run_install_pair direct direct gamertan.com/sandwich-hime

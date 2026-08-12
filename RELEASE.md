@@ -68,14 +68,15 @@ Before `sando/v1.0.0-beta.1` and `v1.0.0-beta.1` are created:
    generated fixtures are current under that exact binary.
 7. Create signed annotated tags and publish the runtime tag first, then the
    compiler tag, from the same reviewed commit.
-8. Verify both documented installs from fresh `GOPROXY=direct` and public-proxy
-   caches. Record propagation delays as delays, not test passes.
+8. Verify both documented runtime-first installs from fresh `GOPROXY=direct`
+   and public-proxy caches. Record propagation delays as delays, not test
+   passes.
 
-The passing public commit
-`113c95c21e57227b4675c9fda015ada59cc9e9a6` (tree
-`a2aeb4dac22853cb3894e3e487b94bbeff5051e5`) is only the pre-beta
-platform baseline. Any documentation, versioning, or code change produces a new
-candidate and requires the candidate matrix to run again before tagging.
+Beta 1 was published from public commit
+`b7a84054d755e42285e50298e41e47f06a8325a5` (tree
+`be9e118e38dfebed19f60403ededdadabe07d2aa`) after its exact-candidate
+matrix passed. Future prereleases require their own candidate evidence; this
+result cannot be relabeled for another commit.
 
 ## RC and final gates
 
@@ -110,9 +111,10 @@ metadata exist, run:
 scripts/verify-public-install.sh --version vX.Y.Z
 ```
 
-That check exercises the documented `go install` and `go get` commands from
-fresh direct-fetch and public-proxy caches. It is separate from the pre-tag,
-read-only `scripts/release-check.sh`.
+That check adds the nested runtime before installing the parent compiler, then
+exercises both commands from fresh direct-fetch and public-proxy caches. The
+order avoids the Go module-cache ambiguity documented for Beta 1. It is
+separate from the pre-tag, read-only `scripts/release-check.sh`.
 
 Release notes report hardware, commit, datasets, commands, `ns/op`,
 allocations, response latency, and methodology for any performance claim.

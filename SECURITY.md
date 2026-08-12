@@ -17,7 +17,7 @@ advisories, and release decisions.
 
 | Version | Security status |
 | --- | --- |
-| `v1.0.0-beta.1` and `sando/v1.0.0-beta.1` | Current evaluation/classroom prerelease once published; best-effort security assessment and fixes; interfaces may change |
+| `v1.0.0-beta.1` and `sando/v1.0.0-beta.1` | Current published evaluation/classroom prerelease; best-effort security assessment and fixes; interfaces may change |
 | Public `main` | Development source; reports welcome, but no compatibility or production-support promise |
 | Older prereleases | Superseded when a newer prerelease or final version is published; reports are still triaged to determine affected versions |
 
@@ -133,7 +133,7 @@ an independent security audit, certification, or formal verification. Coverage
 percentages, passing scanners, and a clean vulnerability database result are
 evidence of specific checks—not proof that no vulnerability exists.
 
-Beta 1 publication requires signed annotated source tags, but may precede the
+Beta 1 uses signed annotated source tags, but precedes the
 complete prebuilt-artifact and key-recovery system. Signed binaries, checksums,
 an SBOM, reproducible archives, and complete source/build provenance are
 release-candidate and final-v1 gates. Their absence from a source-only beta must

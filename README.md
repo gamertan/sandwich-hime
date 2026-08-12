@@ -48,26 +48,29 @@ semantic-version prerelease: source syntax, generated output, the runtime API,
 and CLI behavior may change before final v1, and this beta is not recommended
 for production deployment.
 
-Maintainer-run testing has established a pre-beta baseline on native Windows
-and on Linux with Go 1.25 and Go 1.26. That matrix must pass again on the exact
-Beta 1 commit before its tags are published. Native macOS validation is still
+The exact Beta 1 source passed maintainer-run native Windows and executed Linux
+matrices with Go 1.25.12 and Go 1.26.5. Native macOS validation is still
 pending, so macOS support is provisional in this beta. Mac learners and Go
 developers are warmly invited to try it and share their macOS version,
 architecture, Go version, command, and smallest useful reproduction. Community
 reports broaden the evidence; maintainers remain responsible for security
 review, triage, fixes, and release decisions.
 
-Install the beta compiler:
+Inside an application module, add the small runtime first:
+
+```sh
+go get gamertan.com/sandwich-hime/sando@v1.0.0-beta.1
+```
+
+Then install the beta compiler:
 
 ```sh
 go install gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.1
 ```
 
-Add the small runtime to an application module:
-
-```sh
-go get gamertan.com/sandwich-hime/sando@v1.0.0-beta.1
-```
+Keep that runtime-first order for Beta 1. It avoids a Go module-cache ambiguity
+between the parent compiler module and its nested runtime when both use the
+same prerelease version.
 
 For a reproducible one-off or classroom invocation that does not depend on the
 learner's `PATH`:
@@ -76,10 +79,11 @@ learner's `PATH`:
 go run gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.1 --help
 ```
 
-The runtime is released first as `sando/v1.0.0-beta.1`; the compiler follows as
-`v1.0.0-beta.1`. If a newly announced version is not immediately available
-through a module proxy, retry after the proxy has discovered the immutable tag
-or use the canonical Gitea release instructions.
+The runtime was released first as `sando/v1.0.0-beta.1`; the compiler followed
+as `v1.0.0-beta.1`. Both signed tags, direct fetching, the public Go proxy, and
+the checksum database have been verified. A newly announced future version may
+still need a short propagation interval before every proxy sees its immutable
+tag.
 
 For repository development:
 
