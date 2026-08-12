@@ -72,6 +72,15 @@ Keep that runtime-first order for Beta 1. It avoids a Go module-cache ambiguity
 between the parent compiler module and its nested runtime when both use the
 same prerelease version.
 
+If the compiler was installed first and `go get` reports that the parent module
+does not contain `sando`, seed the exact nested module without clearing the
+global cache, then retry:
+
+```sh
+go mod download gamertan.com/sandwich-hime/sando@v1.0.0-beta.1
+go get gamertan.com/sandwich-hime/sando@v1.0.0-beta.1
+```
+
 For a reproducible one-off or classroom invocation that does not depend on the
 learner's `PATH`:
 
