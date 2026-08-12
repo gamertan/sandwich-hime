@@ -4,7 +4,9 @@ package compiler
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path/filepath"
@@ -115,7 +117,24 @@ func discover(ctx context.Context, paths []string) ([]string, []Diagnostic) {
 					return filepath.SkipDir
 				}
 			}
-			if entry.IsDir() || filepath.Ext(entry.Name()) != ".sando" {
+			if entry.IsDir() {
+				return nil
+			}
+			if strings.HasSuffix(entry.Name(), ".sando.go") {
+				entryInfo, statErr := entry.Info()
+				if statErr != nil {
+					diagnostics = append(diagnostics, diagnostic(path, sourcePosition{Line: 1, Column: 1}, "HIM2013", "cannot inspect possible generated output: "+statErr.Error()))
+					return nil
+				}
+				if !entryInfo.Mode().IsRegular() {
+					return nil
+				}
+				if orphanDiagnostic := inspectOwnedGeneratedOutput(path); orphanDiagnostic != nil {
+					diagnostics = append(diagnostics, *orphanDiagnostic)
+				}
+				return nil
+			}
+			if filepath.Ext(entry.Name()) != ".sando" {
 				return nil
 			}
 			entryInfo, statErr := entry.Info()
@@ -155,6 +174,50 @@ func discover(ctx context.Context, paths []string) ([]string, []Diagnostic) {
 	})
 	sortDiagnostics(diagnostics)
 	return discovered, diagnostics
+}
+
+func inspectOwnedGeneratedOutput(path string) *Diagnostic {
+	owned, err := hasGeneratedMarker(path)
+	if err != nil {
+		item := diagnostic(path, sourcePosition{Line: 1, Column: 1}, "HIM2013", "cannot inspect possible generated output: "+err.Error())
+		return &item
+	}
+	if !owned {
+		return nil
+	}
+
+	sourcePath := strings.TrimSuffix(path, ".go")
+	info, err := os.Lstat(sourcePath)
+	if err == nil && info.Mode().IsRegular() && info.Mode()&os.ModeSymlink == 0 {
+		return nil
+	}
+
+	message := "owned generated output is orphaned because its adjacent .sando source is missing; review and remove the output explicitly"
+	if err == nil {
+		message = "owned generated output is orphaned because its adjacent .sando source is not a regular file; review and remove the output explicitly"
+	} else if !os.IsNotExist(err) {
+		message = "cannot inspect the adjacent .sando source for an owned generated output: " + err.Error()
+	}
+	item := diagnostic(path, sourcePosition{Line: 1, Column: 1}, "HIM2014", message)
+	return &item
+}
+
+func hasGeneratedMarker(path string) (bool, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return false, err
+	}
+	defer file.Close()
+
+	marker := []byte(generatedPrefix + "\n")
+	prefix := make([]byte, len(marker))
+	if _, err := io.ReadFull(file, prefix); err != nil {
+		if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) {
+			return false, nil
+		}
+		return false, err
+	}
+	return string(prefix) == string(marker), nil
 }
 
 func firstSymlinkComponent(path string) (string, error) {

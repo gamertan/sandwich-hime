@@ -31,4 +31,8 @@ The stable proxy reserves `/__himesan/events` for SSE. It injects a fixed reload
 
 When an existing CSP is present, the proxy adds the fixed script's SHA-256 source and same-origin SSE connection permission; it does not add `unsafe-inline` or `unsafe-eval`. The proxy and every candidate upstream are literal loopback addresses. Replaced process groups are terminated and waited for on Unix and Windows.
 
+If the active application exits, the proxy immediately forgets that exact upstream and closes its idle connections. Requests receive the waiting page until another candidate passes its health check; a different process that later acquires the old loopback port is not selected implicitly.
+
+Loopback is host-local, not user-local. Host, Origin, and Fetch Metadata checks defend against browser cross-site and DNS-rebinding requests, but they are not authentication against another process or account on the same workstation. Run `himesan dev` only on a trusted, single-user development machine and do not place secrets in its diagnostics. It invokes the configured Go toolchain, may fetch dependencies according to the user's Go environment, executes the project binary with the user's inherited environment, and forwards the application's requests and responses. Eligible HTML responses may be buffered up to 16 MiB for reload injection; application request, response, and SSE concurrency limits remain the application's and operating system's responsibility.
+
 This is not a production proxy, TLS terminator, public preview server, process orchestrator, or deployment system. V1 refuses non-loopback binding.

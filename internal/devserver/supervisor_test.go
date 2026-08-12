@@ -96,6 +96,73 @@ func TestSupervisorBuildsSwapsAndCleansUp(t *testing.T) {
 	waitForConnectionRefused(t, secondUpstream, 3*time.Second)
 }
 
+func TestSupervisorClearsTargetWhenCurrentApplicationExits(t *testing.T) {
+	if testing.Short() {
+		t.Skip("integration test builds a temporary Go application")
+	}
+	root := t.TempDir()
+	if err := os.WriteFile(filepath.Join(root, "go.mod"), []byte("module example.test/himesan-dev-exit-test\n\ngo 1.25\n"), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	mainPath := filepath.Join(root, "main.go")
+	writeExitingTestApplication(t, mainPath, "short lived", 1500*time.Millisecond)
+
+	cfg := DefaultConfig()
+	cfg.ProxyAddress = "127.0.0.1:0"
+	cfg.HealthPath = "/healthz"
+	events := make(chan Event, 16)
+	supervisor, err := New(Options{
+		RootDir:         root,
+		Config:          cfg,
+		Generate:        func(context.Context) error { return nil },
+		OnEvent:         func(event Event) { events <- event },
+		CacheDir:        filepath.Join(t.TempDir(), "cache"),
+		PollInterval:    30 * time.Second,
+		Debounce:        25 * time.Millisecond,
+		BuildTimeout:    30 * time.Second,
+		StartupTimeout:  time.Second,
+		ShutdownTimeout: 2 * time.Second,
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	runResult := make(chan error, 1)
+	go func() { runResult <- supervisor.Run(ctx) }()
+	t.Cleanup(cancel)
+
+	proxyAddress := waitForProxyAddress(t, supervisor)
+	waitForBody(t, "http://"+proxyAddress+"/", "short lived")
+	waitForPhase(t, events, "run")
+	if target := supervisor.proxy.target.Load(); target != nil {
+		t.Fatalf("proxy retained exited upstream %v", target)
+	}
+
+	client := &http.Client{Transport: &http.Transport{Proxy: nil}, Timeout: time.Second}
+	response, err := client.Get("http://" + proxyAddress + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	body, readErr := io.ReadAll(response.Body)
+	_ = response.Body.Close()
+	if readErr != nil {
+		t.Fatal(readErr)
+	}
+	if response.StatusCode != http.StatusServiceUnavailable || !strings.Contains(string(body), "waiting for a healthy application") {
+		t.Fatalf("dead upstream response = %d %q", response.StatusCode, body)
+	}
+
+	cancel()
+	select {
+	case err := <-runResult:
+		if err != nil {
+			t.Fatalf("Run() error = %v", err)
+		}
+	case <-time.After(5 * time.Second):
+		t.Fatal("Run() did not stop after cancellation")
+	}
+}
+
 func TestGenerationFailureDoesNotMoveProxyTarget(t *testing.T) {
 	t.Parallel()
 	upstream := http.Server{Handler: http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
@@ -168,6 +235,38 @@ func main() {
 	}
 }
 `, healthStatus, message)
+	if err := os.WriteFile(path, []byte(contents), 0o600); err != nil {
+		t.Fatal(err)
+	}
+}
+
+func writeExitingTestApplication(t *testing.T, path, message string, lifetime time.Duration) {
+	t.Helper()
+	contents := fmt.Sprintf(`package main
+
+import (
+	"fmt"
+	"net/http"
+	"os"
+	"time"
+)
+
+func main() {
+	go func() {
+		time.Sleep(%d * time.Millisecond)
+		os.Exit(0)
+	}()
+	mux := http.NewServeMux()
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { w.WriteHeader(http.StatusNoContent) })
+	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, "<!doctype html><html><body>%s</body></html>")
+	})
+	if err := http.ListenAndServe(os.Getenv("HIMESAN_LISTEN_ADDR"), mux); err != nil {
+		panic(err)
+	}
+}
+`, lifetime.Milliseconds(), message)
 	if err := os.WriteFile(path, []byte(contents), 0o600); err != nil {
 		t.Fatal(err)
 	}

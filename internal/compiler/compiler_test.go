@@ -340,6 +340,68 @@ func TestGenerateRefusesUnownedOutput(t *testing.T) {
 	}
 }
 
+func TestDirectoryOperationsRejectOrphanedOwnedOutputBeforeWrites(t *testing.T) {
+	t.Parallel()
+	directory := resolvedTempDir(t)
+	orphanSource := filepath.Join(directory, "orphan.sando")
+	mustWrite(t, orphanSource, simpleSource("Orphan", "last good"))
+	if _, err := Generate(context.Background(), []string{directory}); err != nil {
+		t.Fatal(err)
+	}
+	orphanOutput := orphanSource + ".go"
+	lastGood := mustRead(t, orphanOutput)
+	if err := os.Remove(orphanSource); err != nil {
+		t.Fatal(err)
+	}
+
+	liveSource := filepath.Join(directory, "live.sando")
+	mustWrite(t, liveSource, simpleSource("Live", "must not be written"))
+	// A handwritten file whose name merely resembles an output is not owned by
+	// Hime-san and must not be treated as an orphan.
+	mustWrite(t, filepath.Join(directory, "handwritten.sando.go"), "package demo\n")
+
+	checked, err := Check(context.Background(), []string{directory})
+	if err == nil {
+		t.Fatalf("orphaned owned output unexpectedly passed check: %+v", checked)
+	}
+	assertDiagnosticCode(t, checked.Diagnostics, "HIM2014")
+
+	generated, err := Generate(context.Background(), []string{directory})
+	if err == nil {
+		t.Fatalf("orphaned owned output unexpectedly allowed generation: %+v", generated)
+	}
+	assertDiagnosticCode(t, generated.Diagnostics, "HIM2014")
+	if !bytes.Equal(lastGood, mustRead(t, orphanOutput)) {
+		t.Fatal("orphaned last-good output changed")
+	}
+	if _, statErr := os.Stat(liveSource + ".go"); !errors.Is(statErr, os.ErrNotExist) {
+		t.Fatalf("batch wrote a live output despite the orphan diagnostic: %v", statErr)
+	}
+}
+
+func TestNewGeneratedOutputInheritsRestrictiveSourceMode(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("POSIX file mode test")
+	}
+	t.Parallel()
+	directory := resolvedTempDir(t)
+	path := filepath.Join(directory, "private.sando")
+	mustWrite(t, path, simpleSource("Private", "private"))
+	if err := os.Chmod(path, 0o600); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := Generate(context.Background(), []string{path}); err != nil {
+		t.Fatal(err)
+	}
+	info, err := os.Stat(path + ".go")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if got := info.Mode().Perm(); got != 0o600 {
+		t.Fatalf("generated output mode = %04o, want 0600", got)
+	}
+}
+
 func TestDiscoveryBoundariesAndExplicitNestedFile(t *testing.T) {
 	if runtime.GOOS == "windows" {
 		t.Skip("symlink creation commonly requires additional Windows privileges")

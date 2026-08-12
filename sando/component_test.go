@@ -12,6 +12,13 @@ import (
 	"gamertan.com/sandwich-hime/sando"
 )
 
+func TestRuntimeABIMarker(t *testing.T) {
+	t.Parallel()
+	if sando.ABISandoV1 != "sando.v1" || sando.ABI != sando.ABISandoV1 {
+		t.Fatalf("runtime ABI=%q marker=%q", sando.ABI, sando.ABISandoV1)
+	}
+}
+
 func TestRender(t *testing.T) {
 	t.Parallel()
 

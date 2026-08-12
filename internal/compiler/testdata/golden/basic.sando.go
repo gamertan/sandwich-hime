@@ -11,7 +11,7 @@ import (
 	__himesan_io "io"
 )
 
-var _ = __himesan_sando.ABI
+var _ = __himesan_sando.ABISandoV1
 
 func Greeting(name string) __himesan_sando.Component {
 	return __himesan_sando.ComponentFunc(func(__himesan_render_context __himesan_context.Context, __himesan_writer __himesan_io.Writer) error {
