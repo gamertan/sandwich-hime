@@ -1,0 +1,16 @@
+SPDX-FileCopyrightText: 2025-2026 Cole Speelman
+SPDX-License-Identifier: AGPL-3.0-only
+
+Original Sandwich Hime compiler, command-line, development-tooling, and
+project-documentation work is Copyright (c) 2025-2026 Cole Speelman except
+where a file or contribution identifies a different copyright holder.
+
+The project requires no copyright assignment from contributors. Ownership of
+a contribution remains determined by applicable law and any existing
+agreement. This notice does not claim copyright in third-party license texts,
+the Developer Certificate of Origin, user-authored templates or application
+code, generated application output beyond the limited compiler-authored
+material addressed by OUTPUT_EXCEPTION.md, or work owned by another person.
+
+The nested sando runtime and copyable example have their own notices and
+licenses. Project names and artwork are addressed separately in TRADEMARKS.md.
