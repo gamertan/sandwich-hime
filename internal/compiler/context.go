@@ -34,7 +34,8 @@ const (
 )
 
 type contextAnalyzer struct {
-	file *sourceFile
+	file      *sourceFile
+	positions positionTable
 
 	state       htmlState
 	currentTag  string
@@ -79,7 +80,12 @@ var unsupportedDynamicAttributes = map[string]string{
 }
 
 func analyzeContexts(file *sourceFile) []Diagnostic {
-	analyzer := &contextAnalyzer{file: file, state: htmlData, attrFirstDynamic: -1}
+	analyzer := &contextAnalyzer{
+		file:             file,
+		positions:        newPositionTable(file.Source),
+		state:            htmlData,
+		attrFirstDynamic: -1,
+	}
 	var diagnostics []Diagnostic
 	for nodeIndex := range file.Nodes {
 		node := &file.Nodes[nodeIndex]
@@ -136,20 +142,20 @@ func analyzeContexts(file *sourceFile) []Diagnostic {
 		}
 	}
 
+	end := analyzer.positions.at(len(file.Source))
 	if analyzer.state != htmlData {
-		diagnostics = append(diagnostics, diagnostic(file.Path, endPosition(file.Source), "HIM1310", "template ends in an incomplete or ambiguous HTML parser context"))
+		diagnostics = append(diagnostics, diagnostic(file.Path, end, "HIM1310", "template ends in an incomplete or ambiguous HTML parser context"))
 	}
 	if len(analyzer.stack) != 0 {
-		diagnostics = append(diagnostics, diagnostic(file.Path, endPosition(file.Source), "HIM1311", fmt.Sprintf("component must finish in its starting HTML context; unclosed <%s>", analyzer.stack[len(analyzer.stack)-1])))
+		diagnostics = append(diagnostics, diagnostic(file.Path, end, "HIM1311", fmt.Sprintf("component must finish in its starting HTML context; unclosed <%s>", analyzer.stack[len(analyzer.stack)-1])))
 	}
 	return diagnostics
 }
 
 func (a *contextAnalyzer) consumeText(text string, start sourcePosition) *Diagnostic {
-	positionTable := newPositionTable(a.file.Source)
 	for index := 0; index < len(text); index++ {
 		b := text[index]
-		position := positionTable.at(start.Offset + index)
+		position := a.positions.at(start.Offset + index)
 		if a.rawTag == "script" {
 			a.scriptTail += string(b)
 			if len(a.scriptTail) > len("<!--") {
@@ -613,8 +619,4 @@ func isAttributeNameChar(b byte) bool {
 
 func isHTMLSpace(b byte) bool {
 	return b == ' ' || b == '\t' || b == '\r' || b == '\n' || b == '\f'
-}
-
-func endPosition(source []byte) sourcePosition {
-	return newPositionTable(source).at(len(source))
 }

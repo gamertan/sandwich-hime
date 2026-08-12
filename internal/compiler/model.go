@@ -86,6 +86,7 @@ type CompiledFile struct {
 	Digest     string
 	Code       []byte
 	source     *sourceFile
+	sourceMode uint32
 }
 
 // FileResult describes one source/output pair processed by Generate or Check.

@@ -92,7 +92,10 @@ func generateGo(file *sourceFile) ([]byte, []Diagnostic) {
 		}
 	}
 	output.WriteString(")\n\n")
-	fmt.Fprintf(&output, "var _ = %s.ABI\n\n", imports.Sando)
+	// A version-specific exported marker makes the generated/runtime ABI a Go
+	// build-time contract. The descriptive ABI string alone cannot enforce
+	// compatibility because constant values are not part of symbol resolution.
+	fmt.Fprintf(&output, "var _ = %s.ABISandoV1\n\n", imports.Sando)
 	fmt.Fprintf(&output, "func %s%s%s %s.Component {\n", file.Name, file.TypeParams, file.Params, imports.Sando)
 	fmt.Fprintf(&output, "\treturn %s.ComponentFunc(func(%s %s.Context, %s %s.Writer) error {\n", imports.Sando, contextName, imports.Context, writerName, imports.IO)
 	fmt.Fprintf(&output, "\t\t_ = %s\n", contextName)

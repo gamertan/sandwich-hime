@@ -104,6 +104,22 @@ func (d *developmentProxy) setTarget(address string) error {
 	return nil
 }
 
+// clearTarget forgets address only when it is still the selected upstream.
+// The compare-and-swap prevents a concurrently replaced target from being
+// cleared between the load and store. The supervisor serializes activation
+// and exit handling and calls this only for its current candidate.
+func (d *developmentProxy) clearTarget(address string) bool {
+	target := d.target.Load()
+	if target == nil || target.Host != address {
+		return false
+	}
+	if !d.target.CompareAndSwap(target, nil) {
+		return false
+	}
+	d.closeIdleConnections()
+	return true
+}
+
 func (d *developmentProxy) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if status, message := d.validateRequest(r); status != 0 {
 		w.Header().Set("Cache-Control", "no-store")

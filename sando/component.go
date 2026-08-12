@@ -13,9 +13,15 @@ import (
 )
 
 // ABI identifies the generated-code contract implemented by this version of
-// the runtime. Generated files should reference this constant so that their
-// expected ABI is visible to readers and tooling.
+// the runtime. It is descriptive metadata for people and tooling.
 const ABI = "sando.v1"
+
+// ABISandoV1 is the compile-time compatibility marker for generated code that
+// requires the sando.v1 contract. A future runtime may retain this symbol while
+// it remains backward compatible; an incompatible runtime must remove it so
+// affected generated packages fail at build time instead of failing subtly at
+// render time.
+const ABISandoV1 = ABI
 
 // RuntimeABI is a descriptive alias for ABI.
 const RuntimeABI = ABI
@@ -34,6 +40,11 @@ var (
 // Component is the complete production rendering contract. Components are
 // values rather than HTTP handlers so applications retain ownership of
 // buffering, routing, headers, status codes, and error policy.
+//
+// A Component implemented by handwritten Go is a trusted output capability: it
+// can write arbitrary bytes, block, panic, recurse, or change the surrounding
+// HTML parser context. Hime-generated components are separately checked for a
+// balanced, context-neutral HTML boundary before they implement this contract.
 type Component interface {
 	Render(context.Context, io.Writer) error
 }

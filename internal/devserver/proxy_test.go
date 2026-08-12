@@ -250,6 +250,26 @@ func TestWaitingPageConnectsToEvents(t *testing.T) {
 	}
 }
 
+func TestClearTargetOnlyClearsSelectedUpstream(t *testing.T) {
+	t.Parallel()
+	proxy := newDevelopmentProxy(newEventHub())
+	if err := proxy.setTarget("127.0.0.1:7001"); err != nil {
+		t.Fatal(err)
+	}
+	if proxy.clearTarget("127.0.0.1:7002") {
+		t.Fatal("clearTarget cleared a different selected upstream")
+	}
+	if target := proxy.target.Load(); target == nil || target.Host != "127.0.0.1:7001" {
+		t.Fatalf("selected upstream changed unexpectedly: %v", target)
+	}
+	if !proxy.clearTarget("127.0.0.1:7001") {
+		t.Fatal("clearTarget did not clear the selected upstream")
+	}
+	if target := proxy.target.Load(); target != nil {
+		t.Fatalf("selected upstream remains after clear: %v", target)
+	}
+}
+
 func TestDevelopmentProxyRequiresLocalAuthorityAndSameOrigin(t *testing.T) {
 	t.Parallel()
 	var upstreamRequests atomic.Int32

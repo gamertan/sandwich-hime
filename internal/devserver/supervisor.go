@@ -208,6 +208,7 @@ func (s *Supervisor) Run(ctx context.Context) error {
 	}()
 
 	var current *candidateProcess
+	var currentExited <-chan struct{}
 	defer func() {
 		s.hub.close()
 		s.proxy.closeIdleConnections()
@@ -224,6 +225,9 @@ func (s *Supervisor) Run(ctx context.Context) error {
 	s.emit(Event{Type: "ready", Phase: "proxy", Message: "http://" + listener.Addr().String()})
 	if candidate := s.buildHealthyCandidate(ctx); candidate != nil {
 		current = s.activateCandidate(candidate, current)
+		if current != nil {
+			currentExited = current.exited
+		}
 	}
 
 	roots := makeWatchRoots(s.rootDir, s.options.Config)
@@ -242,6 +246,25 @@ func (s *Supervisor) Run(ctx context.Context) error {
 		select {
 		case <-ctx.Done():
 			return nil
+		case <-currentExited:
+			exited := current
+			current = nil
+			currentExited = nil
+			if exited == nil {
+				continue
+			}
+			// Forget the selected upstream before reporting or cleanup. Future
+			// requests receive the waiting page and cannot follow a reused port.
+			s.proxy.clearTarget(exited.address)
+			exitErr := exited.result()
+			if exitErr == nil {
+				exitErr = errors.New("application exited")
+			} else {
+				exitErr = fmt.Errorf("application exited: %w", exitErr)
+			}
+			_ = exited.cleanupProcessTree()
+			_ = os.Remove(exited.binaryPath)
+			s.report("run", exitErr)
 		case err := <-serverErrors:
 			if err != nil {
 				return fmt.Errorf("development proxy: %w", err)
@@ -262,22 +285,15 @@ func (s *Supervisor) Run(ctx context.Context) error {
 				pending = true
 				changedAt = now
 			}
-			if current != nil && current.hasExited() {
-				exitErr := current.result()
-				if exitErr == nil {
-					exitErr = errors.New("application exited")
-				} else {
-					exitErr = fmt.Errorf("application exited: %w", exitErr)
-				}
-				s.report("run", exitErr)
-				_ = current.cleanupProcessTree()
-				_ = os.Remove(current.binaryPath)
-				current = nil
-			}
 			if pending && now.Sub(changedAt) >= s.options.Debounce {
 				pending = false
 				if candidate := s.buildHealthyCandidate(ctx); candidate != nil {
 					current = s.activateCandidate(candidate, current)
+					if current != nil {
+						currentExited = current.exited
+					} else {
+						currentExited = nil
+					}
 				}
 			}
 		}

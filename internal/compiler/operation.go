@@ -61,7 +61,10 @@ func Generate(ctx context.Context, paths []string) (Result, error) {
 			result.Unchanged++
 			continue
 		}
-		mode := os.FileMode(0o644)
+		// Generated Go can contain every literal present in its source. A new
+		// output therefore must not be more permissive than the source file.
+		// Execute bits are never meaningful for Go source and are stripped.
+		mode := os.FileMode(file.sourceMode) & 0o666
 		if info, statErr := os.Stat(file.OutputPath); statErr == nil {
 			mode = info.Mode().Perm()
 		}
@@ -151,6 +154,7 @@ func compileOperation(ctx context.Context, paths []string) ([]CompiledFile, Resu
 		output, diagnostics := compileWithMapping(sourcePath, source, moduleRelativeSourcePath(sourcePath))
 		result.Diagnostics = append(result.Diagnostics, diagnostics...)
 		if output.Code != nil {
+			output.sourceMode = uint32(info.Mode().Perm())
 			compiled = append(compiled, output)
 			result.Files = append(result.Files, FileResult{SourcePath: output.SourcePath, OutputPath: output.OutputPath})
 		}

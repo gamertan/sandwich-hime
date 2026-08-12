@@ -4,6 +4,10 @@
 
 Unchecked items are release blockers, not aspirational marketing.
 
+The ordered initiative, repository topology, release-candidate sequence, and
+definition of confidence are maintained in
+[docs/V1_RELEASE_PLAN.md](docs/V1_RELEASE_PLAN.md).
+
 ## Compiler and runtime
 
 - [ ] Compiler-owned deterministic golden output repeated across Linux, macOS, and Windows.
