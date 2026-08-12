@@ -33,9 +33,23 @@ while (( $# > 0 )); do
 	esac
 done
 
-if [[ ! "$version" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?(\+[0-9A-Za-z]+([.-][0-9A-Za-z]+)*)?$ ]]; then
-	printf 'error: --version must be a semantic version beginning with v\n' >&2
+if [[ ! "$version" =~ ^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$ ]]; then
+	printf 'error: --version must be a canonical semantic version beginning with v (build metadata is not allowed)\n' >&2
 	exit 2
+fi
+prerelease=${BASH_REMATCH[5]:-}
+if [[ "$prerelease" =~ (^|[.-])(0\.)?[0-9]{14}-[0-9a-f]{12,}$ ]]; then
+	printf 'error: --version must identify a signed release tag, not a Go pseudo-version\n' >&2
+	exit 2
+fi
+if [[ -n "$prerelease" ]]; then
+	IFS=. read -r -a prerelease_identifiers <<<"$prerelease"
+	for identifier in "${prerelease_identifiers[@]}"; do
+		if [[ "$identifier" =~ ^0[0-9]+$ ]]; then
+			printf 'error: numeric prerelease identifiers must not contain leading zeroes: %s\n' "$identifier" >&2
+			exit 2
+		fi
+	done
 fi
 
 for command_name in curl go git false; do

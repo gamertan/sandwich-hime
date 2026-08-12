@@ -56,7 +56,7 @@ func Generate(ctx context.Context, paths []string) (Result, error) {
 			break
 		}
 		existing, readErr := os.ReadFile(file.OutputPath)
-		if readErr == nil && bytesEqual(existing, file.Code) {
+		if readErr == nil && generatedCodeEqual(existing, file.Code) {
 			result.Files[index].Changed = false
 			result.Unchanged++
 			continue
@@ -112,7 +112,7 @@ func Check(ctx context.Context, paths []string) (Result, error) {
 			}
 			continue
 		}
-		if bytesEqual(existing, file.Code) {
+		if generatedCodeEqual(existing, file.Code) {
 			result.Unchanged++
 			continue
 		}

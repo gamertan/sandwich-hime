@@ -11,19 +11,30 @@ verification, or guarantee that no vulnerability exists.
 | Field | Value |
 | --- | --- |
 | Assessment date | 2026-08-12 |
-| Public evidence identity | Exact file checksums in the co-published `PUBLIC-SNAPSHOT.sha256`; private/public commit mapping is retained only in the non-exported operational ledger |
-| Assessment phases | Clean pre-remediation source followed by clean remediated source |
-| Primary environment | Linux amd64 under WSL, Go 1.26.5 |
+| Evidence sets | Clean security self-assessment plus an exact-commit pre-beta platform baseline; neither is evidence for the later Beta 1 candidate |
+| Public commit | `113c95c21e57227b4675c9fda015ada59cc9e9a6` |
+| Public tree | `a2aeb4dac22853cb3894e3e487b94bbeff5051e5` |
+| Maintainer-run environments | Windows 11/amd64 on NTFS; Ubuntu 20.04/amd64 under WSL2 on ext4; Linux/amd64 server containers |
+| Supported Go lanes exercised | Go 1.25.12 and Go 1.26.5 |
 | Declared minimum Go | Go 1.25 |
 | Assessor | Project maintainer with AI-assisted code review; human responsibility retained |
 
-Security remediation discovered during this assessment was committed and the
-named checks were rerun from a clean source state. Before this ledger can support
-a versioned release, the complete campaign must be rerun from the exact
-sanitized public release commit. Private-to-public commit mappings are retained
-outside the exported source rather than being disclosed here.
+The named platform runs used the exact public commit and tree above. Hostnames,
+network addresses, account names, private paths, private repository identities,
+and private commit mappings are intentionally absent from this public ledger.
 
-## Observed evidence
+Beta 1 necessarily changes the tree through versioning, provenance,
+documentation, or source fixes. Therefore this baseline cannot be relabeled as
+Beta 1 evidence. The required Windows/Linux campaign must pass again on the
+exact Beta 1 candidate before either tag is published. Native macOS execution
+remains pending and is provisional for the beta.
+
+## Observed security self-assessment evidence
+
+These commands were observed on clean remediated source during the dated
+assessment. Except where the exact-commit platform matrix below says otherwise,
+the table does not claim that every command was rerun on the named public
+baseline commit.
 
 | Property examined | Enforcement or test surface | Result observed on 2026-08-12 |
 | --- | --- | --- |
@@ -41,7 +52,7 @@ outside the exported source rather than being disclosed here.
 | URL scheme handling | ordinary/trusted URL test matrix | Pass for enumerated cases |
 | Filesystem boundaries | symlink, nested-module, VCS, ownership, stale-output tests | Pass for tested cases; see open findings |
 | Development proxy browser boundary | Host, Origin, Fetch Metadata, CSP, fragment and response tests | Pass for tested cases |
-| Native platform behavior | Linux execution; Windows/macOS cross-compilation | Native Windows/macOS execution not yet evidenced |
+| Platform behavior | Native Windows and executed Linux matrices; macOS cross-compilation | Windows/Linux pass for tested lanes; native macOS pending |
 
 Coverage measures statements executed by tests. It is not branch completeness
 and is not evidence that the executed behavior is secure.
@@ -49,6 +60,31 @@ and is not evidence that the executed behavior is secure.
 `govulncheck` reports vulnerabilities known to the Go vulnerability database
 and reachable through its analysis. A clean result cannot detect unknown flaws,
 design errors, or vulnerabilities outside its model.
+
+## Pre-beta native compatibility matrix
+
+These are maintainer-run, point-in-time results, not continuous CI and not an
+independent audit.
+
+| Environment | Go lanes | Commands and focused evidence | Result and limits |
+| --- | --- | --- | --- |
+| Windows 11/amd64, NTFS | 1.25.12, 1.26.5 | Native PowerShell verifier with race; root/runtime tests, vet, trimpath build, freshness, two generation passes, process-tree cleanup, watcher boundaries, and temporary consumer compilation | Pass. Symlink-output rejection skipped because the test account lacked symlink privilege; the read-only-directory case is POSIX-only |
+| Ubuntu 20.04/amd64 under WSL2, native ext4 checkout | 1.25.12, 1.26.5 | Race-enabled verifier; root/runtime tests, vet, build, two generation passes, ten focused filesystem cases, five focused development-process/watcher cases, and license check | Pass. This is Linux execution under WSL2, not bare-metal or Linux/arm64 evidence |
+| Linux/amd64 server containers | 1.25.12, 1.26.5 | Root/runtime tests, vet, builds, race, licensing, and deterministic generation in sequential isolated official Go containers | Pass. Container resources were capped at 1 CPU and 2 GiB; this is not Linux/arm64 evidence |
+| macOS | — | Cross-compilation only | Native maintainer execution pending; provisional for Beta 1 |
+
+The generated golden `basic.sando.go` was 1,399 bytes and had SHA-256
+`63fa75a3049a3a8a12d769d7f9b6b510dfe763baacf706775b75cef2c57a984f`
+on every tested Windows and Linux lane. Repeated generation also preserved its
+timestamp. This demonstrates cross-host agreement for one compiler-owned
+fixture, not equivalence for every possible template.
+
+Mac learners and Go developers are warmly invited to report ordinary
+compatibility results with macOS version, architecture, `go version`, exact
+command, and a minimal reproduction. Suspected vulnerabilities use the private
+route in [SECURITY.md](../SECURITY.md). Community reports help find gaps;
+maintainers remain responsible for reproducing security-relevant behavior,
+triage, remediation, and release decisions.
 
 ## Security-relevant design evidence
 
@@ -115,8 +151,8 @@ not yet prove semantic HTML safety.
 
 ## Assessment findings and remediation status
 
-The 2026-08-12 assessment identified six concrete gaps. Their current
-working-tree status is recorded here without rewriting the original baseline:
+The 2026-08-12 assessment identified six concrete gaps. Their status in the
+named public pre-beta baseline is recorded here:
 
 | Finding | Current remediation | Executable evidence |
 | --- | --- | --- |
@@ -127,19 +163,26 @@ working-tree status is recorded here without rewriting the original baseline:
 | Trusted-value warnings were described more broadly than their analysis supports | Policy and threat-model copy now call them best-effort lexical audit hints rather than type or taint analysis | Documentation assertion and review |
 | Public copy implied a completed systematic `html/template` differential campaign | Policy and public security copy now describe fixed adversarial cases and list systematic differential work as open | Documentation assertion and review |
 
-The remediated clean source passed the race-enabled repository verifier,
-sanitized-snapshot tests, both bounded fuzz-smoke targets, compiler/runtime
-known-vulnerability scans, and Windows/macOS cross-compilation on 2026-08-12.
-Those results do not become release evidence until the changes are committed,
-exported to the sanitized canonical public tree, and re-run from that exact
-public commit. Native Windows/macOS execution and the other gaps below remain
-separate release decisions.
+The clean remediated assessment source passed the race-enabled repository
+verifier, sanitized-snapshot tests, both bounded fuzz-smoke targets,
+compiler/runtime known-vulnerability scans, and Windows/macOS cross-compilation
+on 2026-08-12. Separately, the exact public pre-beta commit passed the native
+Windows and executed Linux matrices recorded above. These results still do not
+become Beta 1 evidence: both sets of required checks must run on the exact
+candidate after all candidate changes. Native macOS and the other gaps below
+remain separate release decisions.
 
 ## Open assurance gaps
 
+- the exact Beta 1 candidate Windows/Linux matrix and post-tag install checks
+  must still run;
 - confidential mailbox delivery and response/recovery procedure must be tested;
-- release signing, checksum, SBOM, and provenance rehearsal is incomplete;
-- native Windows/macOS execution remains outstanding;
+- SSH tag-signing rehearsal passed, but the candidate tags still require
+  post-publication verification; prebuilt-artifact signing, checksums, SBOM,
+  reproducible provenance, and key recovery remain incomplete;
+- native macOS, Linux/arm64, and Windows/arm64 execution remain outstanding;
+- Windows symlink rejection was not natively exercised because the test account
+  lacked symlink privilege;
 - browser-parser differential and semantic property testing need expansion;
 - compiler input size, CPU, and memory have no built-in hard budget;
 - filesystem checks do not defend against a hostile local actor racing path

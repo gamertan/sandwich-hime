@@ -42,11 +42,44 @@ request object, or production server.
 
 ## Status
 
-This repository is an unsupported public pre-1.0 source preview, not a
-supported v1 release. V1 is gated only by repository-owned compiler, runtime,
-security, compatibility, and release checks. Application-specific deployments,
-examples, and case studies live in their own repositories and are not imported
-as release evidence here.
+`v1.0.0-beta.1` is the first installable public beta. It is supported for
+learning, classroom projects, evaluation, and compatibility feedback. It is a
+semantic-version prerelease: source syntax, generated output, the runtime API,
+and CLI behavior may change before final v1, and this beta is not recommended
+for production deployment.
+
+Maintainer-run testing has established a pre-beta baseline on native Windows
+and on Linux with Go 1.25 and Go 1.26. That matrix must pass again on the exact
+Beta 1 commit before its tags are published. Native macOS validation is still
+pending, so macOS support is provisional in this beta. Mac learners and Go
+developers are warmly invited to try it and share their macOS version,
+architecture, Go version, command, and smallest useful reproduction. Community
+reports broaden the evidence; maintainers remain responsible for security
+review, triage, fixes, and release decisions.
+
+Install the beta compiler:
+
+```sh
+go install gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.1
+```
+
+Add the small runtime to an application module:
+
+```sh
+go get gamertan.com/sandwich-hime/sando@v1.0.0-beta.1
+```
+
+For a reproducible one-off or classroom invocation that does not depend on the
+learner's `PATH`:
+
+```sh
+go run gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.1 --help
+```
+
+The runtime is released first as `sando/v1.0.0-beta.1`; the compiler follows as
+`v1.0.0-beta.1`. If a newly announced version is not immediately available
+through a module proxy, retry after the proxy has discovered the immutable tag
+or use the canonical Gitea release instructions.
 
 For repository development:
 
@@ -64,14 +97,9 @@ and serves it through `http://127.0.0.1:7331` with local-only reload
 diagnostics. That is a Cole-shaped convenience, not a production server or a
 requirement. Take the paved path—or don't.
 
-The eventual versioned installs are:
-
-```sh
-go install gamertan.com/sandwich-hime/cmd/himesan@v1.0.0
-go get gamertan.com/sandwich-hime/sando@v1.0.0
-```
-
-Those vanity paths must not be advertised as working until the corresponding signed releases and `gamertan.com` metadata exist.
+Final-v1 installs will use the same paths with `@v1.0.0`. A version is
+advertised as available only after its immutable tags, `gamertan.com`
+metadata, and clean direct-fetch installation have been verified.
 
 ## The contract
 

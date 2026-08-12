@@ -7,7 +7,7 @@ These scripts are intentionally understandable shell and PowerShell rather than 
 - `verify.sh` runs root and nested-module tests and vet, builds `himesan`, checks the compiler-owned golden output, and proves two generation passes leave the same bytes and unchanged modification times. Set `HIMESAN_RACE=1` for race tests.
 - `verify.ps1` provides the equivalent native Windows lane; pass `-Race` to include the race detector.
 - `check-licenses.sh` enforces the AGPL compiler / Apache runtime boundary and prevents generated application Go from inheriting an AGPL identifier.
-- `release-check.sh --version vX.Y.Z` is a clean-checkout technical preflight. Add `--public` and point `HIMESAN_RELEASE_EVIDENCE_DIR` at a human-reviewed evidence bundle for the public-launch gate. It never tags, pushes, publishes, or deploys.
+- `release-check.sh --version vX.Y.Z` is a clean-checkout technical preflight, including exact candidate-version and generated-provenance checks. Beta publication follows the narrower prerelease gates in `RELEASE.md`; release candidates and final v1 additionally use `--public` with a human-reviewed `HIMESAN_RELEASE_EVIDENCE_DIR`. The script never tags, pushes, publishes, or deploys.
 - `verify-public-install.sh --version vX.Y.Z` is a post-tag/publication check. It verifies exact `go-get=1` package routes and runs the documented compiler install and runtime get from fresh direct-fetch and public-proxy caches without interactive Git credentials.
 
 The canonical Linux CI and release preflight also run bounded fuzz sessions for the parser/context compiler and Go-aware delimiter scanner. Seed-corpus execution remains part of ordinary `go test`; the bounded sessions are extra evidence, not a substitute for longer scheduled fuzzing before v1.

@@ -316,6 +316,28 @@ func auditTrustCalls(file *sourceFile) []Diagnostic {
 	return diagnostics
 }
 
-func bytesEqual(a, b []byte) bool {
-	return bytes.Equal(a, b)
+// generatedCodeEqual compares the freshness-relevant portions of two
+// generated files. The compiler release is informational provenance: changing
+// only that line must not make otherwise identical output stale. Every other
+// byte remains part of the generated-code contract.
+func generatedCodeEqual(a, b []byte) bool {
+	if bytes.Equal(a, b) {
+		return true
+	}
+	aBody, aOK := generatedCodeWithoutCompilerVersion(a)
+	bBody, bOK := generatedCodeWithoutCompilerVersion(b)
+	return aOK && bOK && bytes.Equal(aBody, bBody)
+}
+
+func generatedCodeWithoutCompilerVersion(code []byte) ([]byte, bool) {
+	prefix := []byte(generatedPrefix + "\n// himesan:compiler ")
+	if !bytes.HasPrefix(code, prefix) {
+		return nil, false
+	}
+	remainder := code[len(prefix):]
+	lineEnd := bytes.IndexByte(remainder, '\n')
+	if lineEnd <= 0 {
+		return nil, false
+	}
+	return remainder[lineEnd:], true
 }

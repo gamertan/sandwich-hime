@@ -67,8 +67,39 @@ func TestCommittedGoldenOutput(t *testing.T) {
 	wantPath := sourcePath + ".go"
 	compiled, diagnostics := compileWithMapping(sourcePath, mustRead(t, sourcePath), "internal/compiler/testdata/golden/basic.sando")
 	assertNoErrorDiagnostics(t, diagnostics)
-	if want := mustRead(t, wantPath); !bytes.Equal(compiled.Code, want) {
+	if want := mustRead(t, wantPath); !generatedCodeEqual(compiled.Code, want) {
 		t.Fatalf("committed golden output is stale; run himesan generate\n--- got ---\n%s\n--- want ---\n%s", compiled.Code, want)
+	}
+}
+
+func TestGeneratedCodeEqualityIgnoresOnlyCompilerProvenance(t *testing.T) {
+	t.Parallel()
+	compiled, diagnostics := Compile("hello.sando", []byte(simpleSource("Hello", "hello")))
+	assertNoErrorDiagnostics(t, diagnostics)
+
+	beta := replaceGeneratedCompilerVersion(t, compiled.Code, "v1.0.0-beta.1")
+	if !generatedCodeEqual(compiled.Code, beta) {
+		t.Fatal("compiler provenance alone made generated output unequal")
+	}
+
+	changes := map[string][]byte{
+		"runtime ABI":               bytes.Replace(beta, []byte("himesan:runtime-abi sando.v1"), []byte("himesan:runtime-abi sando.v2"), 1),
+		"source digest":             bytes.Replace(beta, []byte("himesan:source-sha256"), []byte("himesan:source-sha257"), 1),
+		"generated semantics":       bytes.Replace(beta, []byte(".WriteString("), []byte(".WriteText("), 1),
+		"missing provenance marker": bytes.Replace(beta, []byte("// himesan:compiler "), []byte("// compiler: "), 1),
+		"empty provenance":          replaceGeneratedCompilerVersion(t, beta, ""),
+	}
+	for name, changed := range changes {
+		name, changed := name, changed
+		t.Run(name, func(t *testing.T) {
+			t.Parallel()
+			if bytes.Equal(beta, changed) {
+				t.Fatalf("test mutation %q did not change generated output", name)
+			}
+			if generatedCodeEqual(compiled.Code, changed) {
+				t.Fatalf("generatedCodeEqual ignored %s change", name)
+			}
+		})
 	}
 }
 
@@ -578,6 +609,24 @@ func mustRead(t *testing.T, path string) []byte {
 		t.Fatal(err)
 	}
 	return content
+}
+
+func replaceGeneratedCompilerVersion(t *testing.T, code []byte, compilerVersion string) []byte {
+	t.Helper()
+	prefix := []byte(generatedPrefix + "\n// himesan:compiler ")
+	if !bytes.HasPrefix(code, prefix) {
+		t.Fatal("generated output has no compiler provenance line")
+	}
+	remainder := code[len(prefix):]
+	lineEnd := bytes.IndexByte(remainder, '\n')
+	if lineEnd < 0 {
+		t.Fatal("generated compiler provenance line has no terminator")
+	}
+	replaced := make([]byte, 0, len(code)-lineEnd+len(compilerVersion))
+	replaced = append(replaced, prefix...)
+	replaced = append(replaced, compilerVersion...)
+	replaced = append(replaced, remainder[lineEnd:]...)
+	return replaced
 }
 
 func assertNoErrorDiagnostics(t *testing.T, diagnostics []Diagnostic) {

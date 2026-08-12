@@ -5,7 +5,7 @@
 The canonical public project and only contribution venue is the
 [founder-controlled Gitea repository](https://gitea.speelman.ca/gamertan/sandwich-hime).
 Repository maintainers may temporarily disable issue or patch intake during the
-pre-1.0 preview; do not route around a closed intake channel by sending
+pre-1.0 period; do not route around a closed intake channel by sending
 unsolicited private patches.
 
 Public pre-1.0 contributions use Developer Certificate of Origin 1.1 sign-off. The proposed `CLA.md` is an inactive draft, is not a condition of contribution, and creates no contributor or project obligations. If a contribution agreement is ever activated after legal review, the project will announce its prospective terms rather than silently applying the draft.

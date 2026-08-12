@@ -2,9 +2,9 @@
 
 # Founder-led governance
 
-Sandwich Hime is founder-led. Cole Speelman is lead maintainer and has final authority over product direction, merges, releases, project identity, and security coordination. Authority is exercised through reviewable public releases, written rationale for material public decisions, and the published compatibility and release policies. Publishing a source preview does not create a promise of support or transfer stewardship.
+Sandwich Hime is founder-led. Cole Speelman is lead maintainer and has final authority over product direction, merges, releases, project identity, and security coordination. Authority is exercised through reviewable public releases, written rationale for material public decisions, and the published compatibility and release policies. Publishing a prerelease creates only the support commitment stated for that version; it does not transfer stewardship.
 
-Pre-1.0 contributions use the DCO process described in `CONTRIBUTING.md`; the CLA draft is inactive. Acceptance is never guaranteed. Maintainers may close work that expands the product beyond an HTML-first Go component compiler, weakens fail-closed safety, couples the runtime to a framework, or imposes unsustainable maintenance.
+Pre-1.0 contributions use the DCO process described in `CONTRIBUTING.md`; the CLA draft is inactive. Acceptance is never guaranteed. Maintainers may close work that expands the product beyond an HTML-first, ahead-of-time Go template engine, weakens fail-closed safety, couples the runtime to a framework, or imposes unsustainable maintenance.
 
 Maintainers disclose relevant employment or financial conflicts and recuse when a conflict would compromise review. If the project reaches three maintainers, no single employer may control a majority of seats.
 
