@@ -78,6 +78,36 @@ Beta 1 was published from public commit
 matrix passed. Future prereleases require their own candidate evidence; this
 result cannot be relabeled for another commit.
 
+## Beta 2 compiler publication gates
+
+`v1.0.0-beta.2` is compiler-only. Do not create or move a runtime tag when the
+`sando` subtree is byte-identical to `sando/v1.0.0-beta.1`.
+
+Run its technical preflight with the retained runtime made explicit:
+
+```sh
+./scripts/release-check.sh \
+  --version v1.0.0-beta.2 \
+  --runtime-tag sando/v1.0.0-beta.1
+```
+
+In addition to every Beta 1 compiler/security/determinism gate:
+
+1. verify protocol framing, malformed messages, shutdown, request
+   cancellation, UTF-16 positions, CRLF/NUL handling, bounded fuzz smoke,
+   overlays, source appearance/deletion, duplicates, cycles, symlink and
+   nested-module boundaries, completion scope, and component definitions;
+2. prove the language-server package does not write, execute project code,
+   invoke Go, fetch, access the network, or start the development supervisor;
+3. run the exact candidate on supported Go lines under executed Linux and
+   native Windows, with native macOS status stated explicitly;
+4. build an exact version-stamped candidate and assert the additive
+   `features: ["lsp-stdio"]` JSON identity;
+5. publish a signed annotated compiler tag only after the reviewed sanitized
+   public commit is current; and
+6. verify direct, public-proxy, and checksum-database installation without
+   altering `v1.0.0-beta.1` or `sando/v1.0.0-beta.1`.
+
 ## RC and final gates
 
 No release candidate or v1.0.0 release occurs until every applicable gate in

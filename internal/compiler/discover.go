@@ -23,6 +23,17 @@ var excludedDirectories = map[string]bool{
 }
 
 func discover(ctx context.Context, paths []string) ([]string, []Diagnostic) {
+	return discoverWithOptions(ctx, paths, true)
+}
+
+// DiscoverSources finds .sando sources using the same filesystem, symlink,
+// nested-module, VCS, and vendor boundaries as Generate and Check. It omits
+// generated-output inspection because editor analysis does not own freshness.
+func DiscoverSources(ctx context.Context, paths []string) ([]string, []Diagnostic) {
+	return discoverWithOptions(ctx, paths, false)
+}
+
+func discoverWithOptions(ctx context.Context, paths []string, inspectGenerated bool) ([]string, []Diagnostic) {
 	if len(paths) == 0 {
 		paths = []string{"."}
 	}
@@ -121,6 +132,9 @@ func discover(ctx context.Context, paths []string) ([]string, []Diagnostic) {
 				return nil
 			}
 			if strings.HasSuffix(entry.Name(), ".sando.go") {
+				if !inspectGenerated {
+					return nil
+				}
 				entryInfo, statErr := entry.Info()
 				if statErr != nil {
 					diagnostics = append(diagnostics, diagnostic(path, sourcePosition{Line: 1, Column: 1}, "HIM2013", "cannot inspect possible generated output: "+statErr.Error()))

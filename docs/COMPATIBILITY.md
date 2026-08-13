@@ -2,9 +2,9 @@
 
 # Compatibility policy
 
-## Beta 1 contract
+## Beta contract
 
-`v1.0.0-beta.1` and `sando/v1.0.0-beta.1` are semantic-version
+Compiler `v1.0.0-beta.2` and runtime `sando/v1.0.0-beta.1` are semantic-version
 prereleases. They are supported for learning, classroom projects, evaluation,
 and compatibility testing. Before final v1, source syntax, generated output,
 the runtime API, CLI behavior, diagnostics, and configuration may change
@@ -32,7 +32,7 @@ payloads before final v1, or hand-edited generated files.
 
 ## Go and platform support
 
-Beta 1 targets Go 1.25 and Go 1.26. Support is based on point-in-time,
+The current beta targets Go 1.25 and Go 1.26. Support is based on point-in-time,
 maintainer-run release matrices, not an implication of continuous CI coverage.
 A Go support change is announced in release notes before it takes effect.
 

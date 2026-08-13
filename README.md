@@ -42,7 +42,7 @@ request object, or production server.
 
 ## Status
 
-`v1.0.0-beta.1` is the first installable public beta. It is supported for
+`v1.0.0-beta.2` is the current compiler beta. It is supported for
 learning, classroom projects, evaluation, and compatibility feedback. It is a
 semantic-version prerelease: source syntax, generated output, the runtime API,
 and CLI behavior may change before final v1, and this beta is not recommended
@@ -62,15 +62,14 @@ Inside an application module, add the small runtime first:
 go get gamertan.com/sandwich-hime/sando@v1.0.0-beta.1
 ```
 
-Then install the beta compiler:
+Then install the current beta compiler:
 
 ```sh
-go install gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.1
+go install gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.2
 ```
 
-Keep that runtime-first order for Beta 1. It avoids a Go module-cache ambiguity
-between the parent compiler module and its nested runtime when both use the
-same prerelease version.
+Keep that runtime-first order. It avoids path-selection ambiguity between the
+parent compiler module and its independently tagged nested runtime.
 
 If the compiler was installed first and `go get` reports that the parent module
 does not contain `sando`, seed the exact nested module without clearing the
@@ -85,14 +84,14 @@ For a reproducible one-off or classroom invocation that does not depend on the
 learner's `PATH`:
 
 ```sh
-go run gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.1 --help
+go run gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.2 --help
 ```
 
-The runtime was released first as `sando/v1.0.0-beta.1`; the compiler followed
-as `v1.0.0-beta.1`. Both signed tags, direct fetching, the public Go proxy, and
-the checksum database have been verified. A newly announced future version may
-still need a short propagation interval before every proxy sees its immutable
-tag.
+The unchanged runtime remains `sando/v1.0.0-beta.1`; compiler versions are
+independent. Beta 2 adds `himesan lsp --stdio` without changing the runtime ABI.
+Signed compiler tags, direct fetching, the public Go proxy, and the checksum
+database are verified after publication. A newly announced version may still
+need a short propagation interval before every proxy sees its immutable tag.
 
 For repository development:
 
@@ -109,6 +108,14 @@ health-checks a random loopback candidate, preserves the last healthy process,
 and serves it through `http://127.0.0.1:7331` with local-only reload
 diagnostics. That is a Cole-shaped convenience, not a production server or a
 requirement. Take the paved path—or don't.
+
+Beta 2 also provides a standard, editor-neutral language server. It analyzes
+unsaved overlays with the compiler's real parser and context model, but never
+generates, runs Go, executes a project, fetches a module, accesses the network,
+or starts the dev supervisor. See
+[the language-server contract](docs/LANGUAGE_SERVER.md). The portable Agent
+Skill and VS Code preview live in the separate
+[tooling repository](https://gitea.speelman.ca/gamertan/sandwich-hime-tooling).
 
 Final-v1 installs will use the same paths with `@v1.0.0`. A version is
 advertised as available only after its immutable tags, `gamertan.com`

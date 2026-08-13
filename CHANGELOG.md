@@ -6,6 +6,31 @@ Sandwich Hime follows semantic versioning after final v1. Compiler and nested
 runtime releases are versioned independently and listed together when they form
 one coordinated release.
 
+## v1.0.0-beta.2 — 2026-08-12
+
+Compiler-only release; the unchanged Apache runtime remains
+`sando/v1.0.0-beta.1` with ABI `sando.v1`.
+
+### Added
+
+- Standard-library-only `himesan lsp --stdio` with one workspace per process,
+  full-document overlays, 200 ms edit debounce, cancellation, and bounded
+  indexing through the compiler's existing filesystem boundaries.
+- Live diagnostics, trust warnings, duplicate/cycle reporting, UTF-16 LSP
+  positions, tag/context/component hover, document symbols, typed component
+  completion, and component go-to-definition.
+- Additive `features: ["lsp-stdio"]` in `himesan version --json`.
+- Protocol framing and malformed-input fuzzing; overlay, Unicode, CRLF, NUL,
+  deletion, nested-module, symlink, completion, definition, cancellation,
+  shutdown, no-write, and resource-limit tests.
+
+### Boundaries
+
+The server does not generate, run Go or project code, fetch dependencies,
+access the network, start the dev supervisor, format, rename, add imports, or
+delegate general Go completion to `gopls`. Generated-file freshness remains an
+explicit `himesan check --json` workflow.
+
 ## v1.0.0-beta.1 — 2026-08-12
 
 This is the first installable public beta: `sando/v1.0.0-beta.1` for the

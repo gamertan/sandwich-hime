@@ -17,6 +17,7 @@ func TestSelectCompilerVersion(t *testing.T) {
 		{name: "missing build info", linkerValue: developmentCompilerVersion, moduleVersion: "", want: developmentCompilerVersion},
 		{name: "versioned go install", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0", want: "v1.0.0"},
 		{name: "beta launch install", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-beta.1", want: "v1.0.0-beta.1"},
+		{name: "beta two install", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-beta.2", want: "v1.0.0-beta.2"},
 		{name: "versioned prerelease install", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-rc.1", want: "v1.0.0-rc.1"},
 		{name: "hyphenated prerelease install", linkerValue: developmentCompilerVersion, moduleVersion: "v1.2.3-beta-2", want: "v1.2.3-beta-2"},
 		{name: "pseudo version", linkerValue: developmentCompilerVersion, moduleVersion: "v0.0.0-20260811120000-0123456789ab", want: developmentCompilerVersion},
@@ -30,6 +31,7 @@ func TestSelectCompilerVersion(t *testing.T) {
 		{name: "leading zero numeric beta identifier", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-beta.01", want: developmentCompilerVersion},
 		{name: "empty beta identifier", linkerValue: developmentCompilerVersion, moduleVersion: "v1.0.0-beta..1", want: developmentCompilerVersion},
 		{name: "beta linker override wins", linkerValue: "v1.0.0-beta.1", moduleVersion: "(devel)", want: "v1.0.0-beta.1"},
+		{name: "beta two linker override wins", linkerValue: "v1.0.0-beta.2", moduleVersion: "(devel)", want: "v1.0.0-beta.2"},
 		{name: "linker override wins", linkerValue: "v1.0.0-rc.1", moduleVersion: "v1.0.0", want: "v1.0.0-rc.1"},
 	}
 	for _, test := range tests {

@@ -30,12 +30,22 @@ func TestRunHelpVersionAndUnknownCommand(t *testing.T) {
 	if code := run(context.Background(), []string{"version", "--json"}, &stdout, &stderr); code != 0 {
 		t.Fatalf("version exit code = %d: %s", code, stderr.String())
 	}
-	var versionResult map[string]string
+	var versionResult struct {
+		Compiler   string   `json:"compiler"`
+		RuntimeABI string   `json:"runtime_abi"`
+		Features   []string `json:"features"`
+	}
 	if err := json.Unmarshal(stdout.Bytes(), &versionResult); err != nil {
 		t.Fatalf("version JSON: %v", err)
 	}
-	if versionResult["compiler"] == "" || versionResult["runtime_abi"] != compiler.RuntimeABI {
+	if versionResult.Compiler == "" || versionResult.RuntimeABI != compiler.RuntimeABI || len(versionResult.Features) != 1 || versionResult.Features[0] != "lsp-stdio" {
 		t.Fatalf("version result = %#v", versionResult)
+	}
+
+	stdout.Reset()
+	stderr.Reset()
+	if code := run(context.Background(), []string{"lsp"}, &stdout, &stderr); code != 2 {
+		t.Fatalf("lsp without --stdio exit code = %d, want 2", code)
 	}
 
 	stdout.Reset()
