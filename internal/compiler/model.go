@@ -59,17 +59,18 @@ type sourcePosition struct {
 }
 
 type sourceFile struct {
-	Path       string
-	Mapping    string
-	Package    string
-	Name       string
-	TypeParams string
-	Params     string
-	Imports    []sourceImport
-	Nodes      []rendererNode
-	Source     []byte
-	HeaderEnd  int
-	AST        *ast.File
+	Path        string
+	Mapping     string
+	Package     string
+	Name        string
+	TypeParams  string
+	Params      string
+	Imports     []sourceImport
+	Nodes       []rendererNode
+	Source      []byte
+	HeaderEnd   int
+	FunctionPos sourcePosition
+	AST         *ast.File
 }
 
 type sourceImport struct {

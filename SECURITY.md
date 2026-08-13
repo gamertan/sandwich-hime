@@ -2,10 +2,11 @@
 
 # Security policy
 
-Sandwich Hime `v1.0.0-beta.1` is supported within a deliberately narrow
-scope: learning, classroom projects, evaluation, and compatibility testing.
+Sandwich Hime compiler `v1.0.0-beta.2` and runtime
+`sando/v1.0.0-beta.1` are supported within a deliberately narrow scope:
+learning, classroom projects, evaluation, and compatibility testing.
 Security reports are welcome and receive best-effort maintainer assessment and
-fixes while Beta 1 is the current prerelease. This is not production support,
+fixes while this pair is current. This is not production support,
 an SLA, a fitness guarantee, or a promise that a fix will preserve beta APIs.
 
 The community is invited to help find compatibility gaps, especially on macOS.
@@ -17,7 +18,7 @@ advisories, and release decisions.
 
 | Version | Security status |
 | --- | --- |
-| `v1.0.0-beta.1` and `sando/v1.0.0-beta.1` | Current published evaluation/classroom prerelease; best-effort security assessment and fixes; interfaces may change |
+| `v1.0.0-beta.2` compiler and `sando/v1.0.0-beta.1` runtime | Current evaluation/classroom prerelease pair; best-effort security assessment and fixes; interfaces may change |
 | Public `main` | Development source; reports welcome, but no compatibility or production-support promise |
 | Older prereleases | Superseded when a newer prerelease or final version is published; reports are still triaged to determine affected versions |
 
@@ -132,6 +133,12 @@ point-in-time evidence, not continuous assurance. The project has not received
 an independent security audit, certification, or formal verification. Coverage
 percentages, passing scanners, and a clean vulnerability database result are
 evidence of specific checks—not proof that no vulnerability exists.
+
+The Beta 2 language server is read-only and standard-library-only. Its tests
+exercise bounded framing, malformed messages, cancellation, UTF-16 positions,
+unsaved overlays, workspace re-indexing, and no generated writes. Source review
+forbids process execution and network-client imports inside the server. Editor
+workspace trust and executable resolution remain editor-client responsibilities.
 
 Beta 1 uses signed annotated source tags, but precedes the
 complete prebuilt-artifact and key-recovery system. Signed binaries, checksums,

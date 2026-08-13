@@ -114,16 +114,17 @@ func parseSource(path string, source []byte) (*sourceFile, []Diagnostic) {
 	}
 
 	file := &sourceFile{
-		Path:       path,
-		Mapping:    filepath.ToSlash(filepath.Base(path)),
-		Package:    parsedHeader.Package,
-		Name:       parsedHeader.Name,
-		TypeParams: parsedHeader.TypeParams,
-		Params:     parsedHeader.Params,
-		Imports:    parsedHeader.Imports,
-		Source:     source,
-		HeaderEnd:  headerClose + 2,
-		AST:        parsedHeader.AST,
+		Path:        path,
+		Mapping:     filepath.ToSlash(filepath.Base(path)),
+		Package:     parsedHeader.Package,
+		Name:        parsedHeader.Name,
+		TypeParams:  parsedHeader.TypeParams,
+		Params:      parsedHeader.Params,
+		Imports:     parsedHeader.Imports,
+		Source:      source,
+		HeaderEnd:   headerClose + 2,
+		FunctionPos: parsedHeader.FunctionPos,
+		AST:         parsedHeader.AST,
 	}
 
 	templateDiagnostics := tokenizeTemplate(file, source[headerClose+2:], headerClose+2, table)
@@ -139,12 +140,13 @@ func isSpace(b byte) bool {
 }
 
 type parsedHeader struct {
-	Package    string
-	Name       string
-	TypeParams string
-	Params     string
-	Imports    []sourceImport
-	AST        *ast.File
+	Package     string
+	Name        string
+	TypeParams  string
+	Params      string
+	Imports     []sourceImport
+	FunctionPos sourcePosition
+	AST         *ast.File
 }
 
 func parseHeader(path string, declarations []byte, sourceOffset int, table positionTable) (*parsedHeader, []Diagnostic) {
@@ -254,12 +256,13 @@ func parseHeader(path string, declarations []byte, sourceOffset int, table posit
 	}
 
 	return &parsedHeader{
-		Package:    parsed.Name.Name,
-		Name:       function.Name.Name,
-		TypeParams: typeParams,
-		Params:     params,
-		Imports:    imports,
-		AST:        parsed,
+		Package:     parsed.Name.Name,
+		Name:        function.Name.Name,
+		TypeParams:  typeParams,
+		Params:      params,
+		Imports:     imports,
+		FunctionPos: table.at(sourceOffset + functionPosition.Offset),
+		AST:         parsed,
 	}, diagnostics
 }
 

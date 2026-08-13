@@ -18,6 +18,7 @@ import (
 
 	"gamertan.com/sandwich-hime/internal/compiler"
 	"gamertan.com/sandwich-hime/internal/devserver"
+	"gamertan.com/sandwich-hime/internal/lsp"
 	"gamertan.com/sandwich-hime/internal/version"
 )
 
@@ -38,6 +39,8 @@ func run(ctx context.Context, args []string, stdout, stderr io.Writer) int {
 		return runCompilerCommand(ctx, args[0], args[1:], stdout, stderr, compiler.Check)
 	case "dev":
 		return runDev(ctx, args[1:], stdout, stderr)
+	case "lsp":
+		return runLSP(ctx, args[1:], os.Stdin, stdout, stderr)
 	case "version":
 		return runVersion(args[1:], stdout, stderr)
 	case "help", "-h", "--help":
@@ -116,10 +119,11 @@ func runVersion(args []string, stdout, stderr io.Writer) int {
 		return 2
 	}
 	information := struct {
-		Compiler   string `json:"compiler"`
-		RuntimeABI string `json:"runtime_abi"`
-		Go         string `json:"go"`
-	}{Compiler: version.Compiler, RuntimeABI: version.RuntimeABI, Go: runtime.Version()}
+		Compiler   string   `json:"compiler"`
+		RuntimeABI string   `json:"runtime_abi"`
+		Go         string   `json:"go"`
+		Features   []string `json:"features"`
+	}{Compiler: version.Compiler, RuntimeABI: version.RuntimeABI, Go: runtime.Version(), Features: []string{"lsp-stdio"}}
 	if *jsonOutput {
 		if err := json.NewEncoder(stdout).Encode(information); err != nil {
 			fmt.Fprintf(stderr, "himesan: encode version: %v\n", err)
@@ -128,6 +132,27 @@ func runVersion(args []string, stdout, stderr io.Writer) int {
 		return 0
 	}
 	fmt.Fprintf(stdout, "himesan %s (runtime ABI %s, %s)\n", information.Compiler, information.RuntimeABI, information.Go)
+	return 0
+}
+
+func runLSP(ctx context.Context, args []string, stdin io.Reader, stdout, stderr io.Writer) int {
+	flags := flag.NewFlagSet("lsp", flag.ContinueOnError)
+	flags.SetOutput(stderr)
+	stdio := flags.Bool("stdio", false, "serve Language Server Protocol JSON-RPC over stdin/stdout")
+	if err := flags.Parse(args); err != nil {
+		if errors.Is(err, flag.ErrHelp) {
+			return 0
+		}
+		return 2
+	}
+	if !*stdio || flags.NArg() != 0 {
+		fmt.Fprintln(stderr, "himesan lsp requires exactly --stdio")
+		return 2
+	}
+	if err := lsp.Run(ctx, lsp.Options{Input: stdin, Output: stdout, LogOutput: stderr}); err != nil {
+		fmt.Fprintf(stderr, "himesan lsp: %v\n", err)
+		return 1
+	}
 	return 0
 }
 
@@ -312,6 +337,7 @@ func printHelp(output io.Writer) {
 	fmt.Fprintln(output, "  himesan check [--json] [paths...]     validate sources and committed output without writes")
 	fmt.Fprintln(output, "  himesan bless [--json] [paths...]     friendly read-only alias for check")
 	fmt.Fprintln(output, "  himesan dev [flags] [package] [-- app-args...]  run the loopback last-good supervisor")
+	fmt.Fprintln(output, "  himesan lsp --stdio                  run the read-only language server")
 	fmt.Fprintln(output, "  himesan version [--json]              print compiler and runtime ABI versions")
 	fmt.Fprintln(output)
 	fmt.Fprintln(output, "Templates use .sando; .san remains exclusively San language source.")

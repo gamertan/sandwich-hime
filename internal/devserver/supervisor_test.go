@@ -23,6 +23,7 @@ func TestSupervisorBuildsSwapsAndCleansUp(t *testing.T) {
 		t.Skip("integration test builds temporary Go applications")
 	}
 	root := t.TempDir()
+	disableParentVCSStamping(t)
 	if err := os.WriteFile(filepath.Join(root, "go.mod"), []byte("module example.test/himesan-dev-test\n\ngo 1.25\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -41,7 +42,10 @@ func TestSupervisorBuildsSwapsAndCleansUp(t *testing.T) {
 			generations.Add(1)
 			return nil
 		},
-		OnEvent:         func(event Event) { events <- event },
+		OnEvent: func(event Event) {
+			t.Logf("supervisor event: type=%s phase=%s message=%s", event.Type, event.Phase, event.Message)
+			events <- event
+		},
 		CacheDir:        filepath.Join(t.TempDir(), "cache"),
 		PollInterval:    25 * time.Millisecond,
 		Debounce:        25 * time.Millisecond,
@@ -101,6 +105,7 @@ func TestSupervisorClearsTargetWhenCurrentApplicationExits(t *testing.T) {
 		t.Skip("integration test builds a temporary Go application")
 	}
 	root := t.TempDir()
+	disableParentVCSStamping(t)
 	if err := os.WriteFile(filepath.Join(root, "go.mod"), []byte("module example.test/himesan-dev-exit-test\n\ngo 1.25\n"), 0o600); err != nil {
 		t.Fatal(err)
 	}
@@ -112,10 +117,13 @@ func TestSupervisorClearsTargetWhenCurrentApplicationExits(t *testing.T) {
 	cfg.HealthPath = "/healthz"
 	events := make(chan Event, 16)
 	supervisor, err := New(Options{
-		RootDir:         root,
-		Config:          cfg,
-		Generate:        func(context.Context) error { return nil },
-		OnEvent:         func(event Event) { events <- event },
+		RootDir:  root,
+		Config:   cfg,
+		Generate: func(context.Context) error { return nil },
+		OnEvent: func(event Event) {
+			t.Logf("supervisor event: type=%s phase=%s message=%s", event.Type, event.Phase, event.Message)
+			events <- event
+		},
 		CacheDir:        filepath.Join(t.TempDir(), "cache"),
 		PollInterval:    30 * time.Second,
 		Debounce:        25 * time.Millisecond,
@@ -161,6 +169,15 @@ func TestSupervisorClearsTargetWhenCurrentApplicationExits(t *testing.T) {
 	case <-time.After(5 * time.Second):
 		t.Fatal("Run() did not stop after cancellation")
 	}
+}
+
+func disableParentVCSStamping(t *testing.T) {
+	t.Helper()
+	// A temporary standalone module can live under a parent directory that is
+	// itself a VCS checkout (including hardened test sandboxes). Its candidate
+	// must not inherit or depend on that unrelated repository's status.
+	flags := strings.TrimSpace(os.Getenv("GOFLAGS") + " -buildvcs=false")
+	t.Setenv("GOFLAGS", flags)
 }
 
 func TestGenerationFailureDoesNotMoveProxyTarget(t *testing.T) {

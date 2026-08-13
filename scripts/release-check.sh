@@ -8,13 +8,14 @@ cd "$repo_root"
 
 usage() {
 	cat <<'EOF'
-Usage: scripts/release-check.sh --version vX.Y.Z [--public]
+Usage: scripts/release-check.sh --version vX.Y.Z [--runtime-tag sando/vX.Y.Z] [--public]
 
 Runs a read-only release preflight. It never creates tags, commits, release
 artifacts in the repository, pushes, or deploys.
 
-  --version  Candidate compiler version. The corresponding runtime tag is
-             sando/vX.Y.Z.
+  --version      Candidate compiler version.
+  --runtime-tag  Existing runtime tag retained by a compiler-only release.
+                 Omit only when publishing a matching new runtime tag.
   --public   Require the human-reviewed RC/final launch evidence bundle named
              by HIMESAN_RELEASE_EVIDENCE_DIR. Canonical beta prereleases may
              run their narrower publication preflight without this flag.
@@ -22,14 +23,20 @@ EOF
 }
 
 version=''
+runtime_tag=''
 public_release=0
 while (( $# > 0 )); do
 	case "$1" in
-		--version)
-			[[ $# -ge 2 ]] || { usage >&2; exit 2; }
-			version=$2
-			shift 2
-			;;
+	--version)
+		[[ $# -ge 2 ]] || { usage >&2; exit 2; }
+		version=$2
+		shift 2
+		;;
+	--runtime-tag)
+		[[ $# -ge 2 ]] || { usage >&2; exit 2; }
+		runtime_tag=$2
+		shift 2
+		;;
 		--public)
 			public_release=1
 			shift
@@ -74,7 +81,32 @@ if (( public_release == 0 && beta_release == 0 )); then
 	exit 2
 fi
 
-runtime_tag="sando/$version"
+paired_runtime_tag="sando/$version"
+compiler_only=0
+if [[ -z "$runtime_tag" ]]; then
+	runtime_tag=$paired_runtime_tag
+elif [[ ! "$runtime_tag" =~ ^sando/v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$ ]]; then
+	printf 'error: --runtime-tag must be a canonical sando/v semantic version without build metadata\n' >&2
+	exit 2
+else
+	runtime_prerelease=${BASH_REMATCH[5]:-}
+	if [[ "$runtime_prerelease" =~ (^|[.-])(0\.)?[0-9]{14}-[0-9a-f]{12,}$ ]]; then
+		printf 'error: --runtime-tag must identify a signed release, not a Go pseudo-version\n' >&2
+		exit 2
+	fi
+	if [[ -n "$runtime_prerelease" ]]; then
+		IFS=. read -r -a runtime_prerelease_identifiers <<<"$runtime_prerelease"
+		for identifier in "${runtime_prerelease_identifiers[@]}"; do
+			if [[ "$identifier" =~ ^[0-9]+$ && "$identifier" =~ ^0[0-9]+$ ]]; then
+				printf 'error: runtime numeric prerelease identifiers must not contain leading zeroes: %s\n' "$identifier" >&2
+				exit 2
+			fi
+		done
+	fi
+	if [[ "$runtime_tag" != "$paired_runtime_tag" ]]; then
+		compiler_only=1
+	fi
+fi
 
 if [[ -n "$(git status --porcelain=v1 --untracked-files=all)" ]]; then
 	printf 'error: release preflight requires a clean canonical checkout\n' >&2
@@ -99,7 +131,11 @@ if [[ "$branch" != main ]]; then
 	exit 1
 fi
 
-for tag in "$version" "$runtime_tag"; do
+candidate_tags=("$version")
+if (( compiler_only == 0 )); then
+	candidate_tags+=("$runtime_tag")
+fi
+for tag in "${candidate_tags[@]}"; do
 	if git rev-parse -q --verify "refs/tags/$tag" >/dev/null; then
 		printf 'error: candidate tag already exists locally: %s\n' "$tag" >&2
 		exit 1
@@ -113,6 +149,26 @@ for tag in "$version" "$runtime_tag"; do
 		exit 1
 	fi
 done
+
+if (( compiler_only == 1 )); then
+	if ! runtime_refs=$(git ls-remote --tags origin "refs/tags/$runtime_tag" "refs/tags/$runtime_tag^{}" 2>/dev/null); then
+		printf 'error: could not verify retained runtime tag against canonical origin: %s\n' "$runtime_tag" >&2
+		exit 1
+	fi
+	runtime_commit=$(printf '%s\n' "$runtime_refs" | awk '$2 ~ /\^\{\}$/ {print $1}')
+	if [[ -z "$runtime_commit" || ! "$runtime_commit" =~ ^[0-9a-f]{40}$ ]]; then
+		printf 'error: retained runtime tag is absent or is not annotated: %s\n' "$runtime_tag" >&2
+		exit 1
+	fi
+	if ! git cat-file -e "$runtime_commit^{commit}" 2>/dev/null; then
+		printf 'error: retained runtime tag commit is not present in canonical history: %s\n' "$runtime_tag" >&2
+		exit 1
+	fi
+	if [[ "$(git rev-parse HEAD:sando)" != "$(git rev-parse "$runtime_commit:sando")" ]]; then
+		printf 'error: compiler-only release changed the sando subtree retained at %s\n' "$runtime_tag" >&2
+		exit 1
+	fi
+fi
 
 artifact_dir=$(mktemp -d "${TMPDIR:-/tmp}/himesan-release-check.XXXXXXXX")
 cleanup() {
@@ -135,7 +191,7 @@ if [[ "$actual_human_version" != "$expected_human_version" ]]; then
 		"$expected_human_version" "$actual_human_version" >&2
 	exit 1
 fi
-expected_json_version=$(printf '{"compiler":"%s","runtime_abi":"sando.v1","go":"%s"}' "$version" "$candidate_go_version")
+expected_json_version=$(printf '{"compiler":"%s","runtime_abi":"sando.v1","go":"%s","features":["lsp-stdio"]}' "$version" "$candidate_go_version")
 actual_json_version=$("$candidate_binary" version --json)
 if [[ "$actual_json_version" != "$expected_json_version" ]]; then
 	printf 'error: candidate JSON version mismatch\nexpected: %s\nactual:   %s\n' \
@@ -187,6 +243,8 @@ HIMESAN_RACE=1 ./scripts/verify.sh
 printf '\n==> bounded compiler fuzz gates\n'
 go test ./internal/compiler -run '^$' -fuzz '^FuzzCompileNeverPanics$' -fuzztime=20s
 go test ./internal/compiler -run '^$' -fuzz '^FuzzGoDelimiterNeverPanics$' -fuzztime=20s
+go test ./internal/lsp -run '^$' -fuzz '^FuzzFrameReaderNeverPanics$' -fuzztime=20s
+go test ./internal/lsp -run '^$' -fuzz '^FuzzDocumentPositionNeverPanics$' -fuzztime=20s
 
 printf '\n==> vulnerability scan (pinned golang.org/x/vuln v1.6.0)\n'
 go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
@@ -256,4 +314,8 @@ else
 	printf '\nBeta technical publication preflight passed. This does not establish RC/final launch evidence or production stability.\n'
 fi
 
-printf 'No tag, push, publication, or deployment was performed for %s / %s.\n' "$version" "$runtime_tag"
+if (( compiler_only == 1 )); then
+	printf 'No tag, push, publication, or deployment was performed for %s; runtime remains %s.\n' "$version" "$runtime_tag"
+else
+	printf 'No tag, push, publication, or deployment was performed for %s / %s.\n' "$version" "$runtime_tag"
+fi
