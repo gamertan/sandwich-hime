@@ -26,6 +26,40 @@ account names, private paths, private repository identities, and private commit
 mappings are intentionally absent from this public ledger. Native macOS
 execution remains pending and is provisional for the beta.
 
+## Beta 2 compiler publication addendum
+
+This addendum records the additive language-server release without replacing
+the Beta 1 assessment identity above. Compiler tag `v1.0.0-beta.2` is a signed
+annotated tag whose peeled public commit is
+`1082d9d61eb84e67ca4012ff9ee3898ee37ac6fd` and whose public tree is
+`01d5702928f3d9c9fb0e3d2213530add7ff94745`. The tag object is
+`f091cd67f688ba5ee784b18f5a407a9326df7ab2`.
+
+Beta 2 changed only the development compiler. No `sando/v1.0.0-beta.2` tag was
+created. The release preflight compared the retained runtime tag
+`sando/v1.0.0-beta.1` with the Beta 2 commit and verified that their `sando`
+subtrees were byte-identical at tree
+`3035e948f77f160d399089be3ae80c88bab3fed2`.
+
+The exact public Beta 2 source passed the full race-enabled verifier and the
+compiler-only release preflight on executed Linux with Go 1.26.5. Fresh native
+Windows checkouts on NTFS passed the full race-enabled PowerShell verifier,
+focused process-tree/watcher/consumer tests, candidate-stamped version checks,
+and deterministic generation on Go 1.25.12 and Go 1.26.5. Clean isolated
+`GOPROXY=direct` and public-proxy-only installs produced
+`features:["lsp-stdio"]`; the public-proxy path also verified the retained
+runtime through `sum.golang.org`. Native macOS execution remains provisional.
+
+The Beta 2 language server is additive development tooling. Its tested
+security boundary includes protocol-only stdout; bounded header and message
+framing; integer/string JSON-RPC identifiers; full-document in-memory overlays;
+UTF-16 conversion at the protocol boundary; cancellation and shutdown;
+workspace, nested-module, VCS, symlink, and file-count boundaries; and explicit
+no-write/no-network/no-Go-tool execution tests. Fuzz targets exercise bounded
+JSON-RPC framing and document changes. These checks do not make an untrusted
+workspace safe to execute: `himesan dev` and project commands remain trusted
+local-code operations, while `himesan lsp --stdio` performs analysis only.
+
 ## Observed security self-assessment evidence
 
 These commands were observed on clean remediated source during the dated
