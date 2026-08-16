@@ -48,13 +48,17 @@ semantic-version prerelease: source syntax, generated output, the runtime API,
 and CLI behavior may change before final v1, and this beta is not recommended
 for production deployment.
 
-The exact Beta 1 source passed maintainer-run native Windows and executed Linux
-matrices with Go 1.25.12 and Go 1.26.5. Native macOS validation is still
-pending, so macOS support is provisional in this beta. Mac learners and Go
-developers are warmly invited to try it and share their macOS version,
-architecture, Go version, command, and smallest useful reproduction. Community
-reports broaden the evidence; maintainers remain responsible for security
-review, triage, fixes, and release decisions.
+Linux/amd64 is the maintained execution and release target. Required release
+evidence runs on Linux with the supported Go lines. WSL is a useful Linux
+development environment, but it does not turn native Windows into a supported
+target. Native Windows, macOS, and other operating systems may happen to build
+or work and portability reports are welcome; they are not release gates or a
+maintained compatibility promise.
+
+The evidence ledger retains the exact Beta 1 Windows and Linux observations as
+historical facts. Those past results do not expand the current support policy.
+Maintainers remain responsible for security review, triage, fixes, and release
+decisions on the supported Linux target.
 
 Inside an application module, add the small runtime first:
 

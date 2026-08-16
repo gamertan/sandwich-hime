@@ -7,31 +7,29 @@ necessarily blockers for an earlier prerelease. The ordered initiative,
 repository topology, release-candidate sequence, and definition of confidence
 are maintained in [docs/V1_RELEASE_PLAN.md](docs/V1_RELEASE_PLAN.md).
 
-## Beta 1: public learning and evaluation
+## Beta 1: public learning and evaluation (historical)
 
 Beta 1 deliberately ships before the final-v1 compatibility and artifact gates.
 Its scope is classroom use, learning, prototypes, and compatibility feedback;
 it is not a production-stability promise.
 
 - [x] Define beta versus RC/final support and compatibility policy.
-- [x] Establish a public pre-beta Linux/Windows matrix on Go 1.25 and Go 1.26.
-- [x] Document macOS as provisional and invite useful community reports while
-  retaining maintainer responsibility for security and releases.
-- [x] Rerun all required Windows/Linux checks and deterministic generation on
-  the exact Beta 1 candidate.
+- [x] Establish a one-time public pre-beta Linux/Windows evidence matrix on Go
+  1.25 and Go 1.26.
+- [x] Record the untested macOS boundary without presenting it as evidence.
+- [x] Rerun the historical Windows/Linux campaign and deterministic generation
+  on the exact Beta 1 candidate.
 - [x] Publish immutable `sando/v1.0.0-beta.1`, then
   `v1.0.0-beta.1`, from the reviewed public commit.
 - [x] Verify clean runtime-first direct and public-proxy installs after
   publication.
-- [ ] Complete native macOS maintainer validation. This is an RC/final gate,
-  not a Beta 1 gate.
 
 ## Compiler and runtime for RC/final
 
 - [ ] Freeze and machine-check the compiler, CLI, diagnostic, schema, generated,
   and runtime compatibility contracts.
-- [ ] Repeat compiler-owned deterministic golden output across Linux, macOS,
-  and Windows on the exact candidate.
+- [ ] Repeat compiler-owned deterministic golden output across the supported
+  Linux and Go lanes on the exact candidate.
 - [ ] Compile temporary consumer modules using committed Go and only the Apache
   runtime.
 - [ ] Run the parser, delimiter, context, path, and source-map release fuzz
@@ -75,5 +73,5 @@ it is not a production-stability promise.
   machines.
 - [ ] Confirm the sanitized public Gitea source contains no private paths,
   identifiers, history, or unsupported claims.
-- [ ] Publish and observe a signed RC on every supported native platform.
+- [ ] Publish and observe a signed RC on the supported Linux/amd64 target.
 - [ ] Publish `sando/v1.0.0`, then `v1.0.0`, without moving either tag.

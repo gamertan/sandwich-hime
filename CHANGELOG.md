@@ -6,6 +6,23 @@ Sandwich Hime follows semantic versioning after final v1. Compiler and nested
 runtime releases are versioned independently and listed together when they form
 one coordinated release.
 
+## Unreleased
+
+### Changed
+
+- Linux/amd64 is the maintained execution, verification, artifact, and release
+  target. WSL remains a Linux development environment; native Windows, macOS,
+  and other targets are best-effort portability surfaces rather than release
+  gates or compatibility promises.
+- Release preflight now builds the supported Linux/amd64 candidate only and
+  requires Linux platform evidence for RC/final publication.
+
+### Removed
+
+- The native Windows PowerShell verifier and private multi-OS release-gate
+  workflow. Historical platform evidence and best-effort portability code are
+  retained without creating a support obligation.
+
 ## v1.0.0-beta.2 — 2026-08-12
 
 Compiler-only release; the unchanged Apache runtime remains

@@ -253,23 +253,14 @@ go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
 	go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
 )
 
-printf '\n==> cross-compiling release binary smoke set\n'
+printf '\n==> building supported Linux release binary\n'
 for target in \
-	linux/amd64 \
-	linux/arm64 \
-	darwin/amd64 \
-	darwin/arm64 \
-	windows/amd64 \
-	windows/arm64; do
+	linux/amd64; do
 	target_os=${target%/*}
 	target_arch=${target#*/}
-	extension=''
-	if [[ "$target_os" == windows ]]; then
-		extension='.exe'
-	fi
 	CGO_ENABLED=0 GOOS="$target_os" GOARCH="$target_arch" \
 		go build -trimpath -ldflags "$compiler_linker_flags" \
-		-o "$artifact_dir/himesan-$target_os-$target_arch$extension" ./cmd/himesan
+		-o "$artifact_dir/himesan-$target_os-$target_arch" ./cmd/himesan
 done
 
 for required in \
@@ -289,7 +280,7 @@ if (( public_release == 1 )); then
 	fi
 	for evidence in \
 		legal-review.md \
-		cross-platform.md \
+		linux-platform.md \
 		security.md \
 		development-supervisor.md \
 		benchmark-methodology.md \

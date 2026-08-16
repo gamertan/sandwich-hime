@@ -23,8 +23,10 @@ The named Windows and WSL2 platform runs used the exact public commit and tree
 above. The isolated server-container matrix preceded the final candidate and
 is retained only as supplementary Linux evidence. Hostnames, network addresses,
 account names, private paths, private repository identities, and private commit
-mappings are intentionally absent from this public ledger. Native macOS
-execution remains pending and is provisional for the beta.
+mappings are intentionally absent from this public ledger. These platform
+observations are historical evidence, not the current support matrix.
+Linux/amd64 is now the maintained release target; WSL is a Linux development
+environment, while native Windows and macOS are not release blockers.
 
 ## Beta 2 compiler publication addendum
 
@@ -48,7 +50,8 @@ focused process-tree/watcher/consumer tests, candidate-stamped version checks,
 and deterministic generation on Go 1.25.12 and Go 1.26.5. Clean isolated
 `GOPROXY=direct` and public-proxy-only installs produced
 `features:["lsp-stdio"]`; the public-proxy path also verified the retained
-runtime through `sum.golang.org`. Native macOS execution remains provisional.
+runtime through `sum.golang.org`. The Windows result is retained as historical
+portability evidence and does not create an ongoing support promise.
 
 The Beta 2 language server is additive development tooling. Its tested
 security boundary includes protocol-only stdout; bounded header and message
@@ -83,7 +86,7 @@ baseline commit.
 | URL scheme handling | ordinary/trusted URL test matrix | Pass for enumerated cases |
 | Filesystem boundaries | symlink, nested-module, VCS, ownership, stale-output tests | Pass for tested cases; see open findings |
 | Development proxy browser boundary | Host, Origin, Fetch Metadata, CSP, fragment and response tests | Pass for tested cases |
-| Platform behavior | Exact-candidate native Windows and executed Linux matrices; macOS cross-compilation | Windows/Linux pass for tested lanes; native macOS pending |
+| Platform behavior | Historical exact-candidate native Windows and executed Linux matrices | Windows/Linux passed for the tested lanes; current releases require Linux/amd64 evidence |
 
 Coverage measures statements executed by tests. It is not branch completeness
 and is not evidence that the executed behavior is secure.
@@ -92,7 +95,7 @@ and is not evidence that the executed behavior is secure.
 and reachable through its analysis. A clean result cannot detect unknown flaws,
 design errors, or vulnerabilities outside its model.
 
-## Beta 1 native compatibility matrix
+## Historical Beta 1 compatibility matrix
 
 These are maintainer-run, point-in-time results, not continuous CI and not an
 independent audit.
@@ -102,7 +105,7 @@ independent audit.
 | Windows 11/amd64, NTFS | 1.25.12, 1.26.5 | Native PowerShell verifier with race; root/runtime tests, vet, trimpath build, freshness, two generation passes, process-tree cleanup, watcher boundaries, and temporary consumer compilation | Pass. Symlink-output rejection skipped because the test account lacked symlink privilege; the read-only-directory case is POSIX-only |
 | Ubuntu 20.04/amd64 under WSL2, native ext4 checkout | 1.25.12, 1.26.5 | Race-enabled verifier; root/runtime tests, vet, build, two generation passes, ten focused filesystem cases, five focused development-process/watcher cases, and license check | Pass. This is Linux execution under WSL2, not bare-metal or Linux/arm64 evidence |
 | Linux/amd64 server containers | 1.25.12, 1.26.5 | Earlier pre-beta root/runtime tests, vet, builds, race, licensing, and deterministic generation in sequential isolated official Go containers | Pass on the earlier baseline only. Container resources were capped at 1 CPU and 2 GiB; this is supplementary evidence, not an exact Beta 1 lane or Linux/arm64 evidence |
-| macOS | — | Cross-compilation only | Native maintainer execution pending; provisional for Beta 1 |
+| macOS | — | Cross-compilation only | No native Beta 1 evidence; not a maintained release target |
 
 The generated golden `basic.sando.go` was 1,399 bytes and had SHA-256
 `63fa75a3049a3a8a12d769d7f9b6b510dfe763baacf706775b75cef2c57a984f`
@@ -110,12 +113,12 @@ on every tested Windows and Linux lane. Repeated generation also preserved its
 timestamp. This demonstrates cross-host agreement for one compiler-owned
 fixture, not equivalence for every possible template.
 
-Mac learners and Go developers are warmly invited to report ordinary
-compatibility results with macOS version, architecture, `go version`, exact
-command, and a minimal reproduction. Suspected vulnerabilities use the private
-route in [SECURITY.md](../SECURITY.md). Community reports help find gaps;
-maintainers remain responsible for reproducing security-relevant behavior,
-triage, remediation, and release decisions.
+Portability reports for unsupported targets may include the operating system,
+architecture, `go version`, exact command, and a minimal reproduction.
+Suspected vulnerabilities use the private route in
+[SECURITY.md](../SECURITY.md). Such reports help find gaps but do not create a
+support promise; maintainers remain responsible for security triage and fixes
+on the supported Linux target.
 
 ## Security-relevant design evidence
 
@@ -203,8 +206,9 @@ known-vulnerability scans, candidate-version provenance checks, native Windows
 and executed Linux matrices, and Windows/macOS cross-compilation on 2026-08-12.
 Signed annotated runtime and compiler tags were then published from that commit
 in that order. Fresh runtime-first installation passed through both direct Git
-resolution and the public Go proxy after normal proxy propagation. Native
-macOS and the other gaps below remain separate release decisions.
+resolution and the public Go proxy after normal proxy propagation. Future
+release decisions use the current Linux-only support policy rather than
+requiring this historical multi-platform campaign.
 
 ## Open assurance gaps
 
@@ -214,9 +218,8 @@ macOS and the other gaps below remain separate release decisions.
 - the signed annotated Beta tags and their common peeled commit were verified;
   prebuilt-artifact signing, checksums, SBOM, reproducible provenance, and key
   recovery remain incomplete;
-- native macOS, Linux/arm64, and Windows/arm64 execution remain outstanding;
-- Windows symlink rejection was not natively exercised because the test account
-  lacked symlink privilege;
+- Linux/arm64 and non-Linux portability are outside the current maintained
+  release target;
 - browser-parser differential and semantic property testing need expansion;
 - compiler input size, CPU, and memory have no built-in hard budget;
 - filesystem checks do not defend against a hostile local actor racing path

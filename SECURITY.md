@@ -9,7 +9,8 @@ Security reports are welcome and receive best-effort maintainer assessment and
 fixes while this pair is current. This is not production support,
 an SLA, a fitness guarantee, or a promise that a fix will preserve beta APIs.
 
-The community is invited to help find compatibility gaps, especially on macOS.
+The community is invited to help find portability gaps outside the maintained
+Linux target, but those reports do not create a support or release commitment.
 That invitation does not outsource security assurance. Maintainers retain
 responsibility for vulnerability review, triage, remediation decisions,
 advisories, and release decisions.
@@ -35,7 +36,7 @@ public issue.
 If that new mailbox rejects or bounces a message, retain the report and open a
 canonical Gitea issue containing only the fact that the private security contact
 failed. Do not include technical details or sensitive data. The maintainer will
-publish a corrected private route. Ordinary usage, classroom, and macOS
+publish a corrected private route. Ordinary usage, classroom, and portability
 compatibility reports that do not reveal a vulnerability may use a public issue.
 
 Helpful reports include:

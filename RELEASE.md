@@ -21,11 +21,11 @@ while it is the current prerelease, but it is not recommended or supported as a
 production-stable dependency. Syntax, generated output, runtime APIs, CLI
 behavior, and diagnostics may change in a later prerelease.
 
-Beta 1 may publish with native macOS validation pending when Windows and Linux
-have passed the exact-candidate matrix and macOS is clearly marked provisional.
-Community Mac results are valuable compatibility input; they do not transfer
-security review, triage, remediation, or release responsibility away from the
-maintainers.
+Current and future beta release gates run on Linux/amd64. WSL may be used as a
+Linux development environment, but native Windows, macOS, and other targets
+are not release blockers or maintained compatibility promises. Portability
+reports remain useful input; they do not transfer security review, triage,
+remediation, or release responsibility away from the maintainers.
 
 Beta tags are signed, annotated, and immutable. Beta 1 is a source/module
 release installed through the Go toolchain; it does not promise downloadable
@@ -37,9 +37,9 @@ final v1.
 
 An RC means the intended v1 source, runtime, CLI, diagnostics, schemas, and
 generated contract are frozen except for release-blocking fixes. An RC requires
-maintainer-run native Linux, macOS, and Windows evidence, complete release
-artifacts and provenance, signed tags, clean direct/proxy installs, and every RC
-gate in this repository. Findings produce a new RC rather than a moved tag.
+maintainer-run Linux/amd64 evidence, complete release artifacts and provenance,
+signed tags, clean direct/proxy installs, and every RC gate in this repository.
+Findings produce a new RC rather than a moved tag.
 
 ### Final v1
 
@@ -49,7 +49,11 @@ published assurance gap, and the documented RC observation period. A
 deployment, example, classroom project, or case study in another repository is
 neither imported nor required as release evidence.
 
-## Beta 1 publication gates
+## Beta 1 publication gates (historical)
+
+The first beta used a broader one-time platform campaign. The completed items
+below are retained as publication history; they do not define future platform
+support.
 
 Before `sando/v1.0.0-beta.1` and `v1.0.0-beta.1` are created:
 
@@ -99,8 +103,7 @@ In addition to every Beta 1 compiler/security/determinism gate:
    nested-module boundaries, completion scope, and component definitions;
 2. prove the language-server package does not write, execute project code,
    invoke Go, fetch, access the network, or start the development supervisor;
-3. run the exact candidate on supported Go lines under executed Linux and
-   native Windows, with native macOS status stated explicitly;
+3. run the exact candidate on supported Go lines under executed Linux/amd64;
 4. build an exact version-stamped candidate and assert the additive
    `features: ["lsp-stdio"]` JSON identity;
 5. publish a signed annotated compiler tag only after the reviewed sanitized
@@ -111,16 +114,16 @@ In addition to every Beta 1 compiler/security/determinism gate:
 ## RC and final gates
 
 No release candidate or v1.0.0 release occurs until every applicable gate in
-this repository is evidenced, including cross-platform deterministic
-generation, temporary-module compilation, fuzz/adversarial suites,
+this repository is evidenced, including deterministic generation on supported
+Linux and Go lanes, temporary-module compilation, fuzz/adversarial suites,
 race/vet/vulnerability/license checks on the latest two supported Go lines,
 development-supervisor failure tests, and reproducible repository-owned
 benchmark and security results.
 
 Release candidates require a clean canonical checkout, reviewed changelog,
-compatible vanity-import metadata, reproducible binaries, signed annotated
-tags, checksums, SBOMs, vulnerability results, and verification on Linux,
-macOS, and Windows.
+compatible vanity-import metadata, reproducible Linux/amd64 binaries, signed
+annotated tags, checksums, SBOMs, vulnerability results, and verification on
+Linux/amd64.
 
 ## Public source and artifacts
 
