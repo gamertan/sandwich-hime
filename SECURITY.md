@@ -10,7 +10,8 @@ fixes while this pair is current. This is not production support,
 an SLA, a fitness guarantee, or a promise that a fix will preserve beta APIs.
 
 The community is invited to help find portability gaps outside the maintained
-Linux target, but those reports do not create a support or release commitment.
+Linux/amd64 and Darwin/arm64 targets, but those reports do not create a support
+or release commitment.
 That invitation does not outsource security assurance. Maintainers retain
 responsibility for vulnerability review, triage, remediation decisions,
 advisories, and release decisions.
@@ -75,6 +76,28 @@ versions, and agree on a coordinated disclosure plan when appropriate. A fix
 may be delivered through a new immutable version, a retraction, an advisory, or
 documentation that narrows an incorrect guarantee. Published tags will not be
 moved or silently replaced.
+
+## Severity, advisories, retractions, and CVEs
+
+Triage considers attacker prerequisites, affected trust boundary, data or code
+impact, availability impact, default reachability, and whether exploitation
+crosses the documented application-owned capability boundary. The project uses
+plain-language critical, high, moderate, and low labels; it does not publish a
+CVSS score unless the vector and calculation have been reviewed.
+
+An accepted vulnerability affecting a published version receives a canonical
+advisory or release security note identifying affected and fixed versions,
+mitigations, credit, and disclosure chronology as safely available. The
+maintainer requests a CVE when a disclosed vulnerability materially affects a
+published release and a stable public advisory exists. A CVE is an identifier,
+not evidence of severity or independent validation.
+
+Published source and tags are never deleted or moved to hide a faulty release.
+When Go tooling supports the boundary, a later immutable module version may
+use a `retract` directive with a concise rationale. Otherwise the project
+publishes a superseding version and marks the affected release in canonical
+release notes. Retraction does not erase source, evidence, or the disclosure
+record.
 
 ## Scope and trust boundary
 

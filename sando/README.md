@@ -16,4 +16,7 @@ type ComponentFunc func(context.Context, io.Writer) error
 
 `Render` invokes components; generated code uses the context-specific writer helpers and checks `ABI`. Opaque `TrustedHTML`, `TrustedURL`, `TrustedJS`, and `TrustedCSS` values can be constructed only by conspicuous `Trust*` calls in trusted application code.
 
+The exact exported v1 symbol, value, method, field, and signature inventory is
+machine-checked in [`testdata/public-api-v1.txt`](testdata/public-api-v1.txt).
+
 The runtime has its own `go.mod`, Apache-2.0 license, `COPYRIGHT` record, semantic version, and `sando/vX.Y.Z` tags. It never imports the AGPL compiler. Importing the runtime does not make an application AGPL under the project's terms. Applications may license their own code and generated files under terms they choose to the extent they hold the necessary rights, while redistribution of the runtime remains subject to Apache-2.0.

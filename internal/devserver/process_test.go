@@ -87,6 +87,13 @@ func TestTaskkillArguments(t *testing.T) {
 	}
 }
 
+func TestAlreadyFinishedIsAnAcceptableStopResult(t *testing.T) {
+	t.Parallel()
+	if err := acceptableStopError(os.ErrProcessDone); err != nil {
+		t.Fatalf("already-finished process was treated as a stop failure: %v", err)
+	}
+}
+
 func TestManagedProcessHelper(t *testing.T) {
 	switch os.Getenv("HIMESAN_PROCESS_HELPER") {
 	case "":

@@ -21,11 +21,10 @@ while it is the current prerelease, but it is not recommended or supported as a
 production-stable dependency. Syntax, generated output, runtime APIs, CLI
 behavior, and diagnostics may change in a later prerelease.
 
-Current and future beta release gates run on Linux/amd64. WSL may be used as a
-Linux development environment, but native Windows, macOS, and other targets
-are not release blockers or maintained compatibility promises. Portability
-reports remain useful input; they do not transfer security review, triage,
-remediation, or release responsibility away from the maintainers.
+Beta 1 and Beta 2 retain their historical platform evidence. The v1 RC line
+raises the maintained release gate to native Linux/amd64 and Apple Silicon
+macOS/arm64. WSL, native Windows, Intel macOS, and other targets remain useful
+portability input but are not v1 release blockers or maintained promises.
 
 Beta tags are signed, annotated, and immutable. Beta 1 is a source/module
 release installed through the Go toolchain; it does not promise downloadable
@@ -37,9 +36,9 @@ final v1.
 
 An RC means the intended v1 source, runtime, CLI, diagnostics, schemas, and
 generated contract are frozen except for release-blocking fixes. An RC requires
-maintainer-run Linux/amd64 evidence, complete release artifacts and provenance,
-signed tags, clean direct/proxy installs, and every RC gate in this repository.
-Findings produce a new RC rather than a moved tag.
+maintainer-run Linux/amd64 and native macOS/arm64 evidence, complete release
+artifacts and provenance, signed tags, clean direct/proxy installs, and every
+RC gate in this repository. Findings produce a new RC rather than a moved tag.
 
 ### Final v1
 
@@ -121,9 +120,48 @@ development-supervisor failure tests, and reproducible repository-owned
 benchmark and security results.
 
 Release candidates require a clean canonical checkout, reviewed changelog,
-compatible vanity-import metadata, reproducible Linux/amd64 binaries, signed
-annotated tags, checksums, SBOMs, vulnerability results, and verification on
-Linux/amd64.
+compatible vanity-import metadata, reproducible Linux/amd64 and Darwin/arm64
+binaries, signed annotated tags, checksums, SBOMs, vulnerability results, and
+verification on both maintained native targets. Darwin artifacts additionally
+require manual Developer ID signing, notarization, stapling, and Gatekeeper
+validation outside runner authority.
+
+Human-reviewed RC evidence stays outside the source tree. After completing the
+fixed document set reported by `himesan-release verify-evidence`, the release
+operator seals its exact bytes and source identity once:
+
+```sh
+go run ./cmd/himesan-release evidence-manifest \
+  --directory "$HIMESAN_RELEASE_EVIDENCE_DIR" \
+  --repository gamertan/sandwich-hime \
+  --version v1.0.0-rc.1 \
+  --commit "$(git rev-parse HEAD)" \
+  --tree "$(git rev-parse 'HEAD^{tree}')" \
+  --reviewed-by "REVIEWER" \
+  --reviewed-at "YYYY-MM-DDTHH:MM:SSZ"
+```
+
+The manifest is created without overwrite. Changing any document or candidate
+identity requires a fresh review directory and manifest; deleting a manifest
+is not an approval shortcut. `release-check.sh --public` verifies the sealed
+digests and identities but never substitutes for the human review itself.
+
+Native receipts use an equally strict, extraction-scratch-free layout. Download
+runner ZIPs outside this directory, then copy only each checksummed receipt pair
+into the exact four lanes:
+
+```text
+$HIMESAN_NATIVE_EVIDENCE_DIR/
+├── darwin-arm64-go1.26.7/TEND-CI-VERIFICATION.json{,.sha256}
+├── darwin-arm64-go1.27.0/TEND-CI-VERIFICATION.json{,.sha256}
+├── linux-amd64-go1.26.7/TEND-CI-VERIFICATION.json{,.sha256}
+└── linux-amd64-go1.27.0/TEND-CI-VERIFICATION.json{,.sha256}
+```
+
+ZIPs, additional files, renamed lanes, development-repository identities, and
+receipts for a public commit other than current canonical `main` are rejected.
+The strict layout prevents extraction debris or a nearby historical run from
+being mistaken for the reviewed native receipt set.
 
 ## Public source and artifacts
 

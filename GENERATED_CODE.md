@@ -11,4 +11,8 @@ Output must be deterministic for identical source, compiler version, runtime ABI
 
 The template/application author chooses the generated file's license to the extent they hold the necessary rights. A project-wide license may cover generated files because inline headers would be overwritten. Sandwich Hime adds provenance metadata, not an AGPL license identifier or a compiler copyright claim.
 
+The ordered v1 marker fields, compile-time ABI assertion, and source-map form
+are machine-checked against
+[`contracts/generated-provenance-v1.txt`](contracts/generated-provenance-v1.txt).
+
 [OUTPUT_EXCEPTION.md](OUTPUT_EXCEPTION.md) is an additional permission for Cole Speelman-owned generator scaffolding copied into output. It is intended to remove licensing ambiguity without claiming that every generated file is or is not a derivative work. It does not cover third-party inputs, code copied manually from the compiler, other contributors' additions unless they grant the same permission, or the Apache-licensed runtime.

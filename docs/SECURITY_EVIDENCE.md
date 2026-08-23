@@ -25,8 +25,9 @@ is retained only as supplementary Linux evidence. Hostnames, network addresses,
 account names, private paths, private repository identities, and private commit
 mappings are intentionally absent from this public ledger. These platform
 observations are historical evidence, not the current support matrix.
-Linux/amd64 is now the maintained release target; WSL is a Linux development
-environment, while native Windows and macOS are not release blockers.
+Linux/amd64 and Darwin/arm64 are now the maintained v1 release targets. This
+section retains historical Beta 1 evidence; the exact RC must supply new native
+evidence on both targets. WSL and native Windows are not v1 release blockers.
 
 ## Beta 2 compiler publication addendum
 
@@ -82,11 +83,11 @@ baseline commit.
 | Parser robustness smoke | Two bounded Go fuzz targets | Pass; no panic found |
 | Deterministic generation | repeated generate/check/hash/mtime gates | Pass |
 | Writer failures | runtime error/short-write/nil-writer tests | Pass |
-| HTML text/attribute/RCDATA escaping | compiler and runtime adversarial cases | Pass for enumerated cases |
-| URL scheme handling | ordinary/trusted URL test matrix | Pass for enumerated cases |
+| HTML text/attribute/RCDATA escaping | compiler/runtime adversarial cases plus the committed `html/template` overlap corpus | Pass for the committed corpus; documented stricter invalid-UTF-8 handling remains intentional |
+| URL scheme handling | ordinary/trusted URL matrices plus safe, unsafe, and intentionally divergent `html/template` cases | Pass for the committed corpus; control rejection and the explicit `tel` allowlist are documented policy differences |
 | Filesystem boundaries | symlink, nested-module, VCS, ownership, stale-output tests | Pass for tested cases; see open findings |
 | Development proxy browser boundary | Host, Origin, Fetch Metadata, CSP, fragment and response tests | Pass for tested cases |
-| Platform behavior | Historical exact-candidate native Windows and executed Linux matrices | Windows/Linux passed for the tested lanes; current releases require Linux/amd64 evidence |
+| Platform behavior | Historical exact-candidate native Windows and executed Linux matrices | Windows/Linux passed for the tested lanes; the v1 RC requires fresh Linux/amd64 and Darwin/arm64 evidence |
 
 Coverage measures statements executed by tests. It is not branch completeness
 and is not evidence that the executed behavior is secure.
@@ -105,7 +106,7 @@ independent audit.
 | Windows 11/amd64, NTFS | 1.25.12, 1.26.5 | Native PowerShell verifier with race; root/runtime tests, vet, trimpath build, freshness, two generation passes, process-tree cleanup, watcher boundaries, and temporary consumer compilation | Pass. Symlink-output rejection skipped because the test account lacked symlink privilege; the read-only-directory case is POSIX-only |
 | Ubuntu 20.04/amd64 under WSL2, native ext4 checkout | 1.25.12, 1.26.5 | Race-enabled verifier; root/runtime tests, vet, build, two generation passes, ten focused filesystem cases, five focused development-process/watcher cases, and license check | Pass. This is Linux execution under WSL2, not bare-metal or Linux/arm64 evidence |
 | Linux/amd64 server containers | 1.25.12, 1.26.5 | Earlier pre-beta root/runtime tests, vet, builds, race, licensing, and deterministic generation in sequential isolated official Go containers | Pass on the earlier baseline only. Container resources were capped at 1 CPU and 2 GiB; this is supplementary evidence, not an exact Beta 1 lane or Linux/arm64 evidence |
-| macOS | — | Cross-compilation only | No native Beta 1 evidence; not a maintained release target |
+| macOS | — | Cross-compilation only | No native Beta 1 evidence; Darwin/arm64 becomes a maintained target at the v1 RC and requires fresh evidence |
 
 The generated golden `basic.sando.go` was 1,399 bytes and had SHA-256
 `63fa75a3049a3a8a12d769d7f9b6b510dfe763baacf706775b75cef2c57a984f`
@@ -118,7 +119,7 @@ architecture, `go version`, exact command, and a minimal reproduction.
 Suspected vulnerabilities use the private route in
 [SECURITY.md](../SECURITY.md). Such reports help find gaps but do not create a
 support promise; maintainers remain responsible for security triage and fixes
-on the supported Linux target.
+on both supported native targets.
 
 ## Security-relevant design evidence
 
@@ -183,8 +184,13 @@ go test ./internal/compiler -run '^$' \
 ./scripts/verify-public-install.sh --version v1.0.0-beta.1
 ```
 
-The fuzz targets currently assert process robustness and result bounds. They do
-not yet prove semantic HTML safety.
+Those historical Beta 1 fuzz targets asserted process robustness and result
+bounds; they did not prove semantic HTML safety. The v1 compiler target now
+also asserts deterministic diagnostics and generated Go, valid formatted Go,
+source-digest binding, bounded public diagnostic shape, and sanitized source
+map directives. A separate runtime target asserts deterministic, fail-closed
+URL handling with no partial output. These properties still do not replace the
+committed differential corpus or real-browser testing.
 
 ## Assessment findings and remediation status
 
@@ -207,8 +213,8 @@ and executed Linux matrices, and Windows/macOS cross-compilation on 2026-08-12.
 Signed annotated runtime and compiler tags were then published from that commit
 in that order. Fresh runtime-first installation passed through both direct Git
 resolution and the public Go proxy after normal proxy propagation. Future
-release decisions use the current Linux-only support policy rather than
-requiring this historical multi-platform campaign.
+release decisions require fresh evidence for the maintained Linux/amd64 and
+Darwin/arm64 targets rather than reusing this historical campaign.
 
 ## Open assurance gaps
 
@@ -218,9 +224,10 @@ requiring this historical multi-platform campaign.
 - the signed annotated Beta tags and their common peeled commit were verified;
   prebuilt-artifact signing, checksums, SBOM, reproducible provenance, and key
   recovery remain incomplete;
-- Linux/arm64 and non-Linux portability are outside the current maintained
-  release target;
-- browser-parser differential and semantic property testing need expansion;
+- Linux/arm64, Darwin/amd64, Windows, and other targets are outside the current
+  maintained release set;
+- the exact public candidate still needs the committed real-browser generated
+  document and development-supervisor campaign on both maintained hosts;
 - compiler input size, CPU, and memory have no built-in hard budget;
 - filesystem checks do not defend against a hostile local actor racing path
   components between inspection and use;
@@ -233,6 +240,33 @@ requiring this historical multi-platform campaign.
   deadline enforcement;
 - static cycle detection and trust-use warnings are best-effort analyses; and
 - the project has no independent security audit or bug-bounty program.
+
+## v1 disposition of open gaps
+
+The list above intentionally mixes incomplete release evidence with boundaries
+that are not promised by this product. The RC may not convert either category
+into vague assurance. The following disposition is explicit and remains
+subject to exact-public-candidate review:
+
+| Gap | v1 disposition |
+| --- | --- |
+| Security mailbox delivery, backup, and recovery | Release blocker. Complete the delivery/reply and recovery drill before RC publication. Encrypted reporting may remain optional if the supported confidential channel and its limit are stated accurately. |
+| Artifact signing, provenance, and key recovery | Release blocker. Complete deterministic native artifacts, Developer ID notarization, signed-tag rehearsal, and recovery evidence. |
+| Maintained native matrix | Release blocker for Linux/amd64 and Darwin/arm64 only. Other architectures and operating systems are explicitly unsupported, not silently untested promises. |
+| Real-browser parser and supervisor evidence | Release blocker. The repository-owned gate covers a generated typed document, parsed structure, hostile-value inertness, and supervisor behavior. Execute it against the exact public candidate on both maintained hosts before publication. |
+| Compiler resource budgets | Accepted v1 boundary. The compiler is a trusted local build tool; operating-system and runner limits own CPU, memory, and input quotas. No hostile-input resource guarantee is made. |
+| Hostile local filesystem races | Accepted v1 boundary. Symlinks and ownership are checked, but an actor able to mutate the workspace concurrently is outside the trust model. |
+| Watcher integrity | Accepted v1 boundary. Watching is development convenience; explicit `check`, generation, Go tests, and builds remain release/deployment authority. |
+| Human-readable child diagnostics | Accepted v1 boundary. They are bounded for resources but remain trusted local terminal output, not a sanitized telemetry format. |
+| Development CSP rewriting | Accepted v1 boundary. It enables reload on trusted loopback pages and is not production CSP validation. |
+| Deliberately detached descendants | Accepted v1 boundary. Ordinary process groups are terminated and waited for; adversarial detachment is outside the trusted-project development model. |
+| Render recursion, output, panic, allocation, CPU, and deadlines | Accepted v1 boundary. Components are ordinary trusted Go; applications own recovery, deadlines, and resource policy. |
+| Static cycles and trust warnings | Accepted v1 boundary. They are documented best-effort audit hints and never replace Go review/tests or explicit trust decisions. |
+| Independent audit and bug bounty | Accepted disclosure, not a security claim. Neither exists for RC. Public tests, threat model, reporting, and correction policy must not be described as an independent audit. |
+
+An accepted boundary is permitted only because matching compatibility, threat
+model, and release copy already avoid the stronger promise. Any conflicting
+marketing or documentation reopens the item as a release blocker.
 
 ## Interpreting this ledger
 

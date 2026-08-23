@@ -21,3 +21,27 @@ Code families are intentionally coarse compatibility surfaces:
 | `HIM29xx` | Boundary warnings |
 
 Scripts should consume the JSON `code`, `severity`, and location fields, not parse English messages. Message wording may improve within a compatible release.
+
+The exact v1 code inventory is machine-checked against
+[`contracts/diagnostic-codes-v1.txt`](../contracts/diagnostic-codes-v1.txt).
+Adding, removing, or renumbering a code requires an explicit compatibility
+review and snapshot update.
+
+## CLI and structured-output contract
+
+Command exit codes use three classes: `0` for success (including help and
+warning-only results), `1` for a completed operation that failed validation or
+runtime service, and `2` for invalid command usage or failure to encode the
+requested CLI result. `gen` normalizes to `generate`; `bless` remains a named
+read-only alias of `check` in structured output.
+
+The v1 JSON shapes are published as closed schemas:
+
+- [`himesan-operation-output-v1.schema.json`](../contracts/himesan-operation-output-v1.schema.json)
+  for `generate`, `check`, and `bless`;
+- [`himesan-version-output-v1.schema.json`](../contracts/himesan-version-output-v1.schema.json)
+  for `version --json`.
+
+Unknown output fields are not introduced in a compatible v1 patch without an
+explicit schema/version decision. Consumers should still ignore English
+message wording.

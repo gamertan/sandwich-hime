@@ -18,6 +18,8 @@ import (
 	"time"
 )
 
+const integrationCandidateStartupTimeout = 3 * time.Second
+
 func TestSupervisorBuildsSwapsAndCleansUp(t *testing.T) {
 	if testing.Short() {
 		t.Skip("integration test builds temporary Go applications")
@@ -46,11 +48,14 @@ func TestSupervisorBuildsSwapsAndCleansUp(t *testing.T) {
 			t.Logf("supervisor event: type=%s phase=%s message=%s", event.Type, event.Phase, event.Message)
 			events <- event
 		},
-		CacheDir:        filepath.Join(t.TempDir(), "cache"),
-		PollInterval:    25 * time.Millisecond,
-		Debounce:        25 * time.Millisecond,
-		BuildTimeout:    30 * time.Second,
-		StartupTimeout:  750 * time.Millisecond,
+		CacheDir:     filepath.Join(t.TempDir(), "cache"),
+		PollInterval: 25 * time.Millisecond,
+		Debounce:     25 * time.Millisecond,
+		BuildTimeout: 30 * time.Second,
+		// Keep the production default unchanged. Native release runners may
+		// compile another Go line concurrently, so this integration test gives
+		// the temporary child enough time to be scheduled under honest load.
+		StartupTimeout:  integrationCandidateStartupTimeout,
 		ShutdownTimeout: 2 * time.Second,
 	})
 	if err != nil {
@@ -128,7 +133,7 @@ func TestSupervisorClearsTargetWhenCurrentApplicationExits(t *testing.T) {
 		PollInterval:    30 * time.Second,
 		Debounce:        25 * time.Millisecond,
 		BuildTimeout:    30 * time.Second,
-		StartupTimeout:  time.Second,
+		StartupTimeout:  integrationCandidateStartupTimeout,
 		ShutdownTimeout: 2 * time.Second,
 	})
 	if err != nil {
@@ -140,7 +145,11 @@ func TestSupervisorClearsTargetWhenCurrentApplicationExits(t *testing.T) {
 	t.Cleanup(cancel)
 
 	proxyAddress := waitForProxyAddress(t, supervisor)
-	waitForBody(t, "http://"+proxyAddress+"/", "short lived")
+	// Observe the supervisor's ordered activation event instead of racing an
+	// HTTP request against the deliberately short-lived child. Other tests
+	// prove proxy serving; this test proves that an activated child which exits
+	// clears its selected target under scheduler and compiler load.
+	waitForEvent(t, events, "reload", "serve")
 	waitForPhase(t, events, "run")
 	if target := supervisor.proxy.target.Load(); target != nil {
 		t.Fatalf("proxy retained exited upstream %v", target)
@@ -291,16 +300,21 @@ func main() {
 
 func waitForPhase(t *testing.T, events <-chan Event, phase string) {
 	t.Helper()
+	waitForEvent(t, events, "diagnostic", phase)
+}
+
+func waitForEvent(t *testing.T, events <-chan Event, eventType, phase string) {
+	t.Helper()
 	timer := time.NewTimer(10 * time.Second)
 	defer timer.Stop()
 	for {
 		select {
 		case event := <-events:
-			if event.Type == "diagnostic" && event.Phase == phase {
+			if event.Type == eventType && event.Phase == phase {
 				return
 			}
 		case <-timer.C:
-			t.Fatalf("did not receive %s diagnostic", phase)
+			t.Fatalf("did not receive %s/%s event", eventType, phase)
 		}
 	}
 }

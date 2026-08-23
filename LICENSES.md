@@ -7,9 +7,12 @@ Sandwich Hime deliberately separates the development tool from application runti
 
 | Path or material | License |
 | --- | --- |
-| Project-authored files in the repository root, `cmd/**`, `internal/**`, `docs/**`, and `scripts/**`, except the legal texts listed below | AGPL-3.0-only |
+| Project-authored files in the repository root, `cmd/**`, `contracts/**`, `internal/**`, `docs/**`, and `scripts/**`, except the legal texts listed below | AGPL-3.0-only |
 | Nested `sando/**` runtime module, except its verbatim license text | Apache-2.0 |
 | `LICENSE`, `sando/LICENSE`, and `DCO.txt` | Their own stated copying terms and notices |
+| `contracts/himesan-config-v1.schema.json` | AGPL-3.0-only |
+| `contracts/himesan-operation-output-v1.schema.json` | AGPL-3.0-only |
+| `contracts/himesan-version-output-v1.schema.json` | AGPL-3.0-only |
 | User-authored `.sando` templates | Chosen by their author, subject to rights in their inputs |
 | Generated application `.sando.go` files | Chosen by the template/application author, subject to rights in their inputs and dependencies |
 

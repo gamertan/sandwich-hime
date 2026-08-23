@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"gamertan.com/sandwich-hime/internal/compiler"
+	"gamertan.com/sandwich-hime/internal/testpath"
 )
 
 type protocolClient struct {
@@ -140,7 +141,7 @@ func (client *protocolClient) waitDiagnostics(t *testing.T, uri string, wantCode
 }
 
 func TestServerOverlayFeaturesAndNoWrites(t *testing.T) {
-	root := t.TempDir()
+	root := testpath.TempDir(t)
 	writeTestFile(t, filepath.Join(root, "go.mod"), "module example.test/project\n\ngo 1.25\n")
 	homePath := filepath.Join(root, "home.sando")
 	badgePath := filepath.Join(root, "cards", "badge.sando")
@@ -211,7 +212,7 @@ func TestServerOverlayFeaturesAndNoWrites(t *testing.T) {
 }
 
 func TestOverlayHonorsNestedModuleAndSymlinkBoundaries(t *testing.T) {
-	root := t.TempDir()
+	root := testpath.TempDir(t)
 	writeTestFile(t, filepath.Join(root, "go.mod"), "module example.test/root\n")
 	nestedPath := filepath.Join(root, "nested", "view.sando")
 	writeTestFile(t, filepath.Join(root, "nested", "go.mod"), "module example.test/nested\n")
@@ -240,7 +241,7 @@ func TestOverlayHonorsNestedModuleAndSymlinkBoundaries(t *testing.T) {
 }
 
 func TestServerRejectsMultipleRootsAndCanceledRequest(t *testing.T) {
-	root := t.TempDir()
+	root := testpath.TempDir(t)
 	server := &Server{initialized: true, snapshot: workspaceSnapshot{documents: map[string]document{}, analyses: map[string]compiler.DocumentAnalysis{}}}
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
@@ -263,7 +264,7 @@ func TestServerRejectsMultipleRootsAndCanceledRequest(t *testing.T) {
 }
 
 func TestReindexCountsOpenOverlaysInWorkspaceLimit(t *testing.T) {
-	root := t.TempDir()
+	root := testpath.TempDir(t)
 	server := &Server{
 		root:     root,
 		overlays: make(map[string]document, maxWorkspaceFiles+1),

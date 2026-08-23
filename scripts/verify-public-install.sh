@@ -101,6 +101,7 @@ if [[ "$browser_status" != 404 ]]; then
 fi
 
 scratch_dir=$(mktemp -d "${TMPDIR:-/tmp}/himesan-public-install.XXXXXXXX")
+scratch_dir=$(CDPATH= cd -- "$scratch_dir" && pwd -P)
 cleanup() {
 	if [[ -n "${scratch_dir:-}" && -d "$scratch_dir" ]]; then
 		chmod -R u+w -- "$scratch_dir" 2>/dev/null || true

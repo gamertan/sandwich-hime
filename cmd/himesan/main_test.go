@@ -12,6 +12,7 @@ import (
 	"testing"
 
 	"gamertan.com/sandwich-hime/internal/compiler"
+	"gamertan.com/sandwich-hime/internal/testpath"
 )
 
 func TestRunHelpVersionAndUnknownCommand(t *testing.T) {
@@ -67,7 +68,7 @@ func TestRunHelpVersionAndUnknownCommand(t *testing.T) {
 func TestGenerateCheckBlessAndJSONDiagnostics(t *testing.T) {
 	t.Parallel()
 
-	directory := t.TempDir()
+	directory := testpath.TempDir(t)
 	sourcePath := filepath.Join(directory, "hello.sando")
 	source := "<?sando go\npackage views\nfunc Hello(name string)\n?>\n<p><?= name ?></p>\n"
 	if err := os.WriteFile(sourcePath, []byte(source), 0o600); err != nil {

@@ -177,7 +177,8 @@ Sandwich Hime does not:
 ## Open release work
 
 - broaden semantic and browser-parser differential testing;
-- execute the Linux/amd64 security and process-lifecycle release matrix;
+- execute the Linux/amd64 and Darwin/arm64 security and process-lifecycle
+  release matrices;
 - complete signed release provenance, checksums, and SBOM evidence;
 - test the confidential reporting and signing-key recovery procedures; and
 - close or explicitly accept every finding listed in the evidence ledger before

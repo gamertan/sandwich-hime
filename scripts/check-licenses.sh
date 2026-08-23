@@ -54,7 +54,7 @@ check_sha256() {
 
 is_comment_capable_project_file() {
 	case "$1" in
-		COPYRIGHT | */COPYRIGHT | .editorconfig | .gitattributes | .gitignore | *.go | *.mod | *.md | *.sh | *.ps1 | *.yml | *.yaml | *.html | *.css | *.js | *.toml | *.allow)
+		COPYRIGHT | */COPYRIGHT | .editorconfig | .gitattributes | .gitignore | *.go | *.mod | *.md | *.txt | *.sh | *.ps1 | *.yml | *.yaml | *.html | *.css | *.js | *.toml | *.plist | *.allow)
 			return 0
 			;;
 		*)
@@ -67,8 +67,10 @@ list_project_files() {
 	if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
 		git ls-files --cached --others --exclude-standard -z
 	else
-		find . -type d \( -name .git -o -name vendor -o -name bin -o -name dist -o -name coverage \) -prune -o \
-			-type f -print0 | sed -z 's#^\./##'
+		while IFS= read -r -d '' path; do
+			printf '%s\0' "${path#./}"
+		done < <(find . -type d \( -name .git -o -name vendor -o -name bin -o -name dist -o -name coverage \) -prune -o \
+			-type f -print0)
 	fi
 }
 
@@ -152,7 +154,8 @@ while IFS= read -r -d '' path; do
 			continue
 			;;
 		*.json)
-			fail "$path cannot carry a comment and needs an explicit license-map entry"
+			grep -Fq "\`$path\`" LICENSES.md || \
+				fail "$path cannot carry a comment and needs an exact license-map entry"
 			continue
 			;;
 	esac

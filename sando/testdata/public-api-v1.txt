@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: Apache-2.0
+
+const ABI = "sando.v1"
+const ABISandoV1 = "sando.v1"
+const RuntimeABI = "sando.v1"
+func (*URLSafetyError).Error() string
+func (*URLSafetyError).Unwrap() error
+func (ComponentFunc).Render(ctx context.Context, w io.Writer) error
+func Render(ctx context.Context, w io.Writer, component Component) error
+func TrustCSS(value string) TrustedCSS
+func TrustHTML(value string) TrustedHTML
+func TrustJS(value string) TrustedJS
+func TrustURL(value string) TrustedURL
+func WriteAttr(w io.Writer, value any) error
+func WriteCSS(w io.Writer, value TrustedCSS) error
+func WriteHTML(w io.Writer, value TrustedHTML) error
+func WriteJS(w io.Writer, value TrustedJS) error
+func WriteRCDATA(w io.Writer, value any) error
+func WriteString(w io.Writer, value string) error
+func WriteText(w io.Writer, value any) error
+func WriteURL(w io.Writer, value any) error
+type Component interface{Render(context.Context, io.Writer) error}
+type ComponentFunc func(context.Context, io.Writer) error
+type TrustedCSS struct{ /* opaque */ }
+type TrustedHTML struct{ /* opaque */ }
+type TrustedJS struct{ /* opaque */ }
+type TrustedURL struct{ /* opaque */ }
+type URLSafetyError struct{Scheme string; Reason string}
+var ErrNilComponent error
+var ErrNilContext error
+var ErrNilWriter error
+var ErrUnsafeURL error

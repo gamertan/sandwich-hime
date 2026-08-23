@@ -48,17 +48,17 @@ semantic-version prerelease: source syntax, generated output, the runtime API,
 and CLI behavior may change before final v1, and this beta is not recommended
 for production deployment.
 
-Linux/amd64 is the maintained execution and release target. Required release
-evidence runs on Linux with the supported Go lines. WSL is a useful Linux
-development environment, but it does not turn native Windows into a supported
-target. Native Windows, macOS, and other operating systems may happen to build
-or work and portability reports are welcome; they are not release gates or a
-maintained compatibility promise.
+Linux/amd64 and Apple Silicon macOS/arm64 are the maintained v1 execution and
+release targets. Native release evidence runs with pinned Go 1.26.7 and Go
+1.27.0 toolchains on both platforms; the module language directive remains Go
+1.25 for consumer compatibility. WSL, native Windows, Intel macOS, and other
+targets may be useful development or portability environments but are not v1
+compatibility promises.
 
 The evidence ledger retains the exact Beta 1 Windows and Linux observations as
 historical facts. Those past results do not expand the current support policy.
 Maintainers remain responsible for security review, triage, fixes, and release
-decisions on the supported Linux target.
+decisions on both supported native targets.
 
 Inside an application module, add the small runtime first:
 

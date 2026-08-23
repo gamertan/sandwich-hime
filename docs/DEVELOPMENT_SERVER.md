@@ -8,6 +8,9 @@ The application must read its listen address from the configured environment var
 
 ## `himesan.json` schema version 1
 
+The machine-readable contract is
+[`contracts/himesan-config-v1.schema.json`](../contracts/himesan-config-v1.schema.json).
+
 ```json
 {
   "version": 1,

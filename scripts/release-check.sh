@@ -16,9 +16,11 @@ artifacts in the repository, pushes, or deploys.
   --version      Candidate compiler version.
   --runtime-tag  Existing runtime tag retained by a compiler-only release.
                  Omit only when publishing a matching new runtime tag.
-  --public   Require the human-reviewed RC/final launch evidence bundle named
-             by HIMESAN_RELEASE_EVIDENCE_DIR. Canonical beta prereleases may
-             run their narrower publication preflight without this flag.
+  --public       Require the human-reviewed RC/final launch evidence bundle
+                 named by HIMESAN_RELEASE_EVIDENCE_DIR and the four native
+                 runner receipts named by HIMESAN_NATIVE_EVIDENCE_DIR.
+                 Canonical beta prereleases may run their narrower publication
+                 preflight without this flag.
 EOF
 }
 
@@ -171,6 +173,7 @@ if (( compiler_only == 1 )); then
 fi
 
 artifact_dir=$(mktemp -d "${TMPDIR:-/tmp}/himesan-release-check.XXXXXXXX")
+artifact_dir=$(CDPATH= cd -- "$artifact_dir" && pwd -P)
 cleanup() {
 	if [[ -n "${artifact_dir:-}" && -d "$artifact_dir" ]]; then
 		rm -rf -- "$artifact_dir"
@@ -238,6 +241,7 @@ for pass in 1 2; do
 done
 
 ./scripts/check-licenses.sh
+./scripts/test-public-snapshot.sh
 HIMESAN_RACE=1 ./scripts/verify.sh
 
 printf '\n==> bounded compiler fuzz gates\n'
@@ -245,6 +249,10 @@ go test ./internal/compiler -run '^$' -fuzz '^FuzzCompileNeverPanics$' -fuzztime
 go test ./internal/compiler -run '^$' -fuzz '^FuzzGoDelimiterNeverPanics$' -fuzztime=20s
 go test ./internal/lsp -run '^$' -fuzz '^FuzzFrameReaderNeverPanics$' -fuzztime=20s
 go test ./internal/lsp -run '^$' -fuzz '^FuzzDocumentPositionNeverPanics$' -fuzztime=20s
+(
+	cd sando
+	go test -run '^$' -fuzz '^FuzzWriteURLPolicy$' -fuzztime=20s
+)
 
 printf '\n==> vulnerability scan (pinned golang.org/x/vuln v1.6.0)\n'
 go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
@@ -253,15 +261,16 @@ go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
 	go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
 )
 
-printf '\n==> building supported Linux release binary\n'
-for target in \
-	linux/amd64; do
-	target_os=${target%/*}
-	target_arch=${target#*/}
-	CGO_ENABLED=0 GOOS="$target_os" GOARCH="$target_arch" \
-		go build -trimpath -ldflags "$compiler_linker_flags" \
-		-o "$artifact_dir/himesan-$target_os-$target_arch" ./cmd/himesan
-done
+target="$(go env GOOS)/$(go env GOARCH)"
+case "$target" in
+linux/amd64 | darwin/arm64) ;;
+*) printf 'error: release preflight requires a maintained native target, found %s\n' "$target" >&2; exit 1 ;;
+esac
+target_os=${target%/*}
+target_arch=${target#*/}
+printf '\n==> building supported native %s release binary\n' "$target"
+CGO_ENABLED=0 go build -trimpath -ldflags "$compiler_linker_flags" \
+	-o "$artifact_dir/himesan-$target_os-$target_arch" ./cmd/himesan
 
 for required in \
 	scripts/verify-public-install.sh \
@@ -274,23 +283,26 @@ done
 
 if (( public_release == 1 )); then
 	evidence_dir=${HIMESAN_RELEASE_EVIDENCE_DIR:-}
+	native_evidence_dir=${HIMESAN_NATIVE_EVIDENCE_DIR:-}
 	if [[ -z "$evidence_dir" || ! -d "$evidence_dir" ]]; then
 		printf 'error: --public requires HIMESAN_RELEASE_EVIDENCE_DIR\n' >&2
 		exit 1
 	fi
-	for evidence in \
-		legal-review.md \
-		linux-platform.md \
-		security.md \
-		development-supervisor.md \
-		benchmark-methodology.md \
-		vanity-imports.md \
-		signing-and-recovery.md; do
-		if [[ ! -s "$evidence_dir/$evidence" ]]; then
-			printf 'error: public release evidence is missing or empty: %s\n' "$evidence_dir/$evidence" >&2
-			exit 1
-		fi
-	done
+	if [[ -z "$native_evidence_dir" || ! -d "$native_evidence_dir" ]]; then
+		printf 'error: --public requires HIMESAN_NATIVE_EVIDENCE_DIR\n' >&2
+		exit 1
+	fi
+	go run ./cmd/himesan-release verify-native \
+		--directory "$native_evidence_dir" \
+		--repository gamertan/sandwich-hime \
+		--commit "$(git rev-parse HEAD)" \
+		--tree "$(git rev-parse 'HEAD^{tree}')"
+	go run ./cmd/himesan-release verify-evidence \
+		--directory "$evidence_dir" \
+		--repository gamertan/sandwich-hime \
+		--version "$version" \
+		--commit "$(git rev-parse HEAD)" \
+		--tree "$(git rev-parse 'HEAD^{tree}')"
 fi
 
 if [[ -n "$(git status --porcelain=v1 --untracked-files=all)" ]]; then

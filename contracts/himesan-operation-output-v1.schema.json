@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sandwichhime.com/schema/himesan-operation-output-v1.schema.json",
+  "title": "Hime-san generate/check JSON result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["command", "ok", "result"],
+  "properties": {
+    "command": {"enum": ["generate", "check", "bless"]},
+    "ok": {"type": "boolean"},
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["files", "discovered", "changed", "unchanged", "stale", "missing"],
+      "properties": {
+        "files": {
+          "type": ["array", "null"],
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["source_path", "output_path", "changed", "stale", "missing"],
+            "properties": {
+              "source_path": {"type": "string"},
+              "output_path": {"type": "string"},
+              "changed": {"type": "boolean"},
+              "stale": {"type": "boolean"},
+              "missing": {"type": "boolean"}
+            }
+          }
+        },
+        "diagnostics": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "line", "column", "code", "severity", "message"],
+            "properties": {
+              "path": {"type": "string"},
+              "line": {"type": "integer", "minimum": 1},
+              "column": {"type": "integer", "minimum": 1},
+              "code": {"type": "string", "pattern": "^HIM[0-9]{4}$"},
+              "severity": {"enum": ["error", "warning"]},
+              "message": {"type": "string"}
+            }
+          }
+        },
+        "discovered": {"type": "integer", "minimum": 0},
+        "changed": {"type": "integer", "minimum": 0},
+        "unchanged": {"type": "integer", "minimum": 0},
+        "stale": {"type": "integer", "minimum": 0},
+        "missing": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

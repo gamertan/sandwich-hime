@@ -30,13 +30,28 @@ compiler versions; `himesan check` defines whether they are current. The
 project makes no compatibility promise for internal packages, development SSE
 payloads before final v1, or hand-edited generated files.
 
+The v1 compatibility snapshots cover the exported `sando` API and values, CLI
+help and exit-code classes, structured operation/version output, diagnostic
+codes, `himesan.json`, and generated provenance. English diagnostic wording,
+internal packages, temporary paths, and compiler implementation details are not
+stable API.
+
+An API deprecated after final v1 remains available for the rest of the v1
+major line and may be removed in v2. A security correction may fail closed in
+a patch release when retaining old behavior would contradict a published safety
+guarantee; that exception receives an advisory and migration note rather than a
+silent compatibility claim. Until a broader maintenance policy is announced,
+only the latest stable v1 patch and the current prerelease receive fixes.
+
 ## Go and platform support
 
-The current beta targets Go 1.25 and Go 1.26 on Linux/amd64. Required release
-evidence runs in Linux CI and on Linux deployment hosts. WSL is treated as a
-Linux development environment. Native Windows, macOS, and other targets are
-not maintained release targets or release blockers; a successful build there
-is useful portability evidence, not a compatibility promise. A Go or platform
+The modules retain a `go 1.25` language directive for consumer compatibility.
+The maintained v1 build and verification targets are Linux/amd64 and Apple
+Silicon macOS/arm64 using the pinned patched Go 1.26.7 and Go 1.27.0 toolchains.
+Both native targets are release blockers. A sleeping or unavailable Mac delays
+the release gate rather than silently converting it into Linux or
+cross-compilation evidence. Native Windows, Intel macOS, Linux/arm64, and other
+targets may work but are not v1 compatibility promises. A Go or platform
 support change is announced in release notes before it takes effect.
 
 ### Historical Beta 1 observations

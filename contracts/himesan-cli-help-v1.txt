@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: AGPL-3.0-only
+
+Sandwich Hime / Hime-san — HTML-first typed components for Go
+
+Usage:
+  himesan generate [--json] [paths...]  generate adjacent .sando.go files
+  himesan gen [--json] [paths...]       alias for generate
+  himesan check [--json] [paths...]     validate sources and committed output without writes
+  himesan bless [--json] [paths...]     friendly read-only alias for check
+  himesan dev [flags] [package] [-- app-args...]  run the loopback last-good supervisor
+  himesan lsp --stdio                  run the read-only language server
+  himesan version [--json]              print compiler and runtime ABI versions
+
+Templates use .sando; .san remains exclusively San language source.

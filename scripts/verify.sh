@@ -65,6 +65,7 @@ run_module_checks . "compiler module"
 
 log "compiler module: go build"
 build_dir=$(mktemp -d "${TMPDIR:-/tmp}/himesan-verify.XXXXXXXX")
+build_dir=$(CDPATH= cd -- "$build_dir" && pwd -P)
 cleanup() {
 	if [[ -n "${build_dir:-}" && -d "$build_dir" ]]; then
 		rm -rf -- "$build_dir"

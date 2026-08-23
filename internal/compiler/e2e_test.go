@@ -128,6 +128,9 @@ func TestRCDATACannotBeBypassedByTrustedHTML(t *testing.T) {
 	view := View{Name: "title", URL: "/", JS: sando.TrustJS(""), HTML: sando.TrustHTML("</textarea><script>bad()</script>")}
 	if err := sando.Render(context.Background(), &output, Page(view)); err != nil { t.Fatal(err) }
 	if strings.Contains(output.String(), "</textarea><script>") { t.Fatalf("RCDATA boundary escaped: %s", output.String()) }
+	output.Reset()
+	if err := sando.Render(context.Background(), &output, List([]string{"one", "two"})); err != nil { t.Fatal(err) }
+	if output.String() != "\n<ul><li>one</li><li>two</li></ul>" { t.Fatalf("generic component output: %q", output.String()) }
 }
 `)
 	templatePath := filepath.Join(directory, "page.sando")
@@ -141,7 +144,13 @@ func Page(view View)
 <script><?= view.JS ?></script>
 <textarea><?= view.HTML ?></textarea>
 </body></html>`)
-	result, err := Generate(context.Background(), []string{templatePath})
+	genericPath := filepath.Join(directory, "list.sando")
+	mustWrite(t, genericPath, `<?sando go
+package generated
+func List[T ~string](values []T)
+?>
+<ul><? for _, value := range values { ?><li><?= value ?></li><? } ?></ul>`)
+	result, err := Generate(context.Background(), []string{templatePath, genericPath})
 	if err != nil {
 		t.Fatalf("Generate failed: %v (%v)", err, result.Diagnostics)
 	}

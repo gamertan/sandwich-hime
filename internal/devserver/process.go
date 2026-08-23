@@ -81,7 +81,7 @@ func (c *candidateProcess) cleanupProcessTree() error {
 	processTree := c.processTree
 	c.processTree = 0
 	c.mu.Unlock()
-	return cleanupProcess(c.command, processTree)
+	return acceptableStopError(cleanupProcess(c.command, processTree))
 }
 
 func (c *candidateProcess) stop(ctx context.Context) error {
@@ -117,6 +117,9 @@ func (c *candidateProcess) stop(ctx context.Context) error {
 
 func acceptableStopError(err error) error {
 	if err == nil {
+		return nil
+	}
+	if errors.Is(err, os.ErrProcessDone) {
 		return nil
 	}
 	var exitError *exec.ExitError

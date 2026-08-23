@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sandwichhime.com/schema/himesan-version-output-v1.schema.json",
+  "title": "Hime-san version JSON result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["compiler", "runtime_abi", "go", "features"],
+  "properties": {
+    "compiler": {"type": "string", "minLength": 1},
+    "runtime_abi": {"const": "sando.v1"},
+    "go": {"type": "string", "minLength": 1},
+    "features": {
+      "type": "array",
+      "prefixItems": [{"const": "lsp-stdio"}],
+      "minItems": 1,
+      "maxItems": 1
+    }
+  }
+}

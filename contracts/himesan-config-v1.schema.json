@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://sandwichhime.com/schema/himesan-config-v1.schema.json",
+  "title": "Hime-san local development configuration v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version"],
+  "properties": {
+    "version": {"const": 1},
+    "sourceRoots": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "pattern": "^[^\\u0000]+$"},
+      "minItems": 1,
+      "default": ["."]
+    },
+    "goPackage": {"type": "string", "minLength": 1, "pattern": "^[^\\u0000\\r\\n]+$", "default": "."},
+    "appArgs": {"type": "array", "items": {"type": "string", "pattern": "^[^\\u0000]*$"}, "default": []},
+    "listenAddressEnv": {
+      "type": "string",
+      "pattern": "^[A-Za-z_][A-Za-z0-9_]*$",
+      "default": "HIMESAN_LISTEN_ADDR"
+    },
+    "healthPath": {"type": "string", "pattern": "^/(?!/)[^?#\\u0000\\r\\n]*$", "default": "/"},
+    "proxyAddress": {
+      "type": "string",
+      "anyOf": [
+        {"pattern": "^127(?:\\.[0-9]{1,3}){3}:[0-9]{1,5}$"},
+        {"pattern": "^\\[::1\\]:[0-9]{1,5}$"}
+      ],
+      "default": "127.0.0.1:7331"
+    },
+    "additionalWatchRoots": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1, "pattern": "^[^\\u0000]+$"},
+      "default": []
+    }
+  }
+}
