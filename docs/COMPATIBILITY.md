@@ -2,19 +2,18 @@
 
 # Compatibility policy
 
-## Beta contract
+## Current release-candidate contract
 
-Compiler `v1.0.0-beta.2` and runtime `sando/v1.0.0-beta.1` are semantic-version
-prereleases. They are supported for learning, classroom projects, evaluation,
-and compatibility testing. Before final v1, source syntax, generated output,
-the runtime API, CLI behavior, diagnostics, and configuration may change
-without compatibility shims. Every public change must still be documented and
-generation must remain deterministic.
+Compiler `v1.0.0-rc.1` and runtime `sando/v1.0.0-rc.1` are the current
+semantic-version prereleases. The intended v1 source syntax, generated API,
+runtime API, CLI behavior, diagnostics, and configuration schemas are frozen
+except for release-blocking corrections. Every correction receives a new
+immutable RC, documentation, and deterministic generation evidence.
 
-The beta is not a production-stability commitment. Maintainers accept and
+The RC is not yet the final-v1 support commitment. Maintainers accept and
 triage security reports within the boundary described in
-[SECURITY.md](../SECURITY.md), but cannot promise that a beta fix preserves its
-public API.
+[SECURITY.md](../SECURITY.md). A security correction may intentionally fail
+closed when retaining behavior would contradict a published safety guarantee.
 
 ## Final-v1 contract
 

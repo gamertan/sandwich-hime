@@ -2,12 +2,13 @@
 
 # Security policy
 
-Sandwich Hime compiler `v1.0.0-beta.2` and runtime
-`sando/v1.0.0-beta.1` are supported within a deliberately narrow scope:
-learning, classroom projects, evaluation, and compatibility testing.
-Security reports are welcome and receive best-effort maintainer assessment and
-fixes while this pair is current. This is not production support,
-an SLA, a fitness guarantee, or a promise that a fix will preserve beta APIs.
+Sandwich Hime compiler `v1.0.0-rc.1` and runtime
+`sando/v1.0.0-rc.1` are the current release-candidate pair. The intended v1
+interfaces are frozen except for release-blocking corrections while the RC
+completes its public observation period. Security reports are welcome and
+receive best-effort maintainer assessment and fixes while this pair is current.
+This is not an SLA, certification, fitness guarantee, or final-v1 support
+promise.
 
 The community is invited to help find portability gaps outside the maintained
 Linux/amd64 and Darwin/arm64 targets, but those reports do not create a support
@@ -20,11 +21,12 @@ advisories, and release decisions.
 
 | Version | Security status |
 | --- | --- |
-| `v1.0.0-beta.2` compiler and `sando/v1.0.0-beta.1` runtime | Current evaluation/classroom prerelease pair; best-effort security assessment and fixes; interfaces may change |
+| `v1.0.0-rc.1` compiler and `sando/v1.0.0-rc.1` runtime | Current release-candidate pair; intended v1 interfaces frozen except for release-blocking corrections; best-effort security assessment and fixes during the RC observation period |
+| `v1.0.0-beta.2` compiler and `sando/v1.0.0-beta.1` runtime | Superseded evaluation/classroom pair after RC publication |
 | Public `main` | Development source; reports welcome, but no compatibility or production-support promise |
 | Older prereleases | Superseded when a newer prerelease or final version is published; reports are still triaged to determine affected versions |
 
-Beta support lasts until it is superseded or explicitly withdrawn in the
+Prerelease support lasts until it is superseded or explicitly withdrawn in the
 supported-version table and release notes. Published tags are immutable. A
 security fix is issued as a new version, never by silently replacing a tag.
 
@@ -158,17 +160,16 @@ an independent security audit, certification, or formal verification. Coverage
 percentages, passing scanners, and a clean vulnerability database result are
 evidence of specific checks—not proof that no vulnerability exists.
 
-The Beta 2 language server is read-only and standard-library-only. Its tests
+The language server is read-only and standard-library-only. Its tests
 exercise bounded framing, malformed messages, cancellation, UTF-16 positions,
 unsaved overlays, workspace re-indexing, and no generated writes. Source review
 forbids process execution and network-client imports inside the server. Editor
 workspace trust and executable resolution remain editor-client responsibilities.
 
-Beta 1 uses signed annotated source tags, but precedes the
-complete prebuilt-artifact and key-recovery system. Signed binaries, checksums,
-an SBOM, reproducible archives, and complete source/build provenance are
-release-candidate and final-v1 gates. Their absence from a source-only beta must
-not be read as evidence of artifact authenticity beyond the verified tag and
-canonical source.
+Beta 1 uses signed annotated source tags but predates the complete artifact
+system. The RC adds signed or checksummed binaries, SPDX SBOMs, reproducible
+archives, and source/build provenance. Those controls establish artifact
+identity and provenance; they do not constitute an independent security audit
+or prove the absence of vulnerabilities.
 
 This policy is practical project guidance, not legal advice.

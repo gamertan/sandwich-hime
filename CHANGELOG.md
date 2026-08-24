@@ -8,20 +8,47 @@ one coordinated release.
 
 ## Unreleased
 
+No changes have been accepted after the first v1 release candidate.
+
+## v1.0.0-rc.1 — 2026-08-24
+
+The first release candidate coordinates compiler `v1.0.0-rc.1` and runtime
+`sando/v1.0.0-rc.1` at runtime ABI `sando.v1`. The intended v1 language,
+generated API, runtime API, CLI, diagnostics, and schemas are frozen except for
+release-blocking corrections.
+
+### Added
+
+- Maintained native Linux/amd64 and Apple Silicon macOS/arm64 verification on
+  pinned Go 1.26.7 and Go 1.27.0 toolchains.
+- Reproducible Linux and Darwin archives with checksums, SPDX SBOMs, manifests,
+  build provenance, and exact public-source identities.
+- A Developer ID-signed, notarized, and stapled macOS disk image for the native
+  arm64 compiler.
+- Exact contract snapshots, contextual-escaping differentials, real-browser
+  compiler and development-supervisor evidence, long fuzz evidence, and
+  repository-owned benchmark evidence.
+- Standard-library-only LSP diagnostics, hover, document symbols, component
+  completion, and go-to-definition retained from Beta 2 as part of the frozen
+  v1 command surface.
+
 ### Changed
 
-- Linux/amd64 is the maintained execution, verification, artifact, and release
-  target. WSL remains a Linux development environment; native Windows, macOS,
-  and other targets are best-effort portability surfaces rather than release
-  gates or compatibility promises.
-- Release preflight now builds the supported Linux/amd64 candidate only and
-  requires Linux platform evidence for RC/final publication.
+- Linux/amd64 and Apple Silicon macOS/arm64 are the maintained execution,
+  verification, artifact, and release targets. WSL, native Windows, Intel
+  macOS, Linux/arm64, and other targets remain useful portability surfaces but
+  are not v1 compatibility promises.
+- The module language directive remains Go 1.25 for consumer compatibility;
+  maintained release builds use the pinned patched Go 1.26 and Go 1.27 lines.
+- Release evidence is bound to the exact sanitized public commit and tree.
+  GitHub remains an untagged discovery snapshot; Gitea remains the source,
+  contribution, module, tag, and artifact authority.
 
 ### Removed
 
 - The native Windows PowerShell verifier and private multi-OS release-gate
-  workflow. Historical platform evidence and best-effort portability code are
-  retained without creating a support obligation.
+  workflow. Historical Windows evidence remains recorded without creating a
+  current support obligation.
 
 ## v1.0.0-beta.2 — 2026-08-12
 

@@ -42,11 +42,12 @@ request object, or production server.
 
 ## Status
 
-`v1.0.0-beta.2` is the current compiler beta. It is supported for
-learning, classroom projects, evaluation, and compatibility feedback. It is a
-semantic-version prerelease: source syntax, generated output, the runtime API,
-and CLI behavior may change before final v1, and this beta is not recommended
-for production deployment.
+`v1.0.0-rc.1` is the current release candidate for both the compiler and the
+independently tagged runtime. The intended v1 source syntax, generated API,
+runtime API, CLI, diagnostics, and schemas are frozen except for
+release-blocking corrections. It remains a semantic-version prerelease while
+the project completes its public observation period; a finding is fixed in a
+new RC rather than by moving either tag.
 
 Linux/amd64 and Apple Silicon macOS/arm64 are the maintained v1 execution and
 release targets. Native release evidence runs with pinned Go 1.26.7 and Go
@@ -63,13 +64,13 @@ decisions on both supported native targets.
 Inside an application module, add the small runtime first:
 
 ```sh
-go get gamertan.com/sandwich-hime/sando@v1.0.0-beta.1
+go get gamertan.com/sandwich-hime/sando@v1.0.0-rc.1
 ```
 
-Then install the current beta compiler:
+Then install the matching release-candidate compiler:
 
 ```sh
-go install gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.2
+go install gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-rc.1
 ```
 
 Keep that runtime-first order. It avoids path-selection ambiguity between the
@@ -80,22 +81,23 @@ does not contain `sando`, seed the exact nested module without clearing the
 global cache, then retry:
 
 ```sh
-go mod download gamertan.com/sandwich-hime/sando@v1.0.0-beta.1
-go get gamertan.com/sandwich-hime/sando@v1.0.0-beta.1
+go mod download gamertan.com/sandwich-hime/sando@v1.0.0-rc.1
+go get gamertan.com/sandwich-hime/sando@v1.0.0-rc.1
 ```
 
 For a reproducible one-off or classroom invocation that does not depend on the
 learner's `PATH`:
 
 ```sh
-go run gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-beta.2 --help
+go run gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-rc.1 --help
 ```
 
-The unchanged runtime remains `sando/v1.0.0-beta.1`; compiler versions are
-independent. Beta 2 adds `himesan lsp --stdio` without changing the runtime ABI.
-Signed compiler tags, direct fetching, the public Go proxy, and the checksum
-database are verified after publication. A newly announced version may still
-need a short propagation interval before every proxy sees its immutable tag.
+The runtime implementation retains ABI `sando.v1` and zero third-party module
+requirements. The coordinated RC tags make the intended v1 pair explicit even
+though compiler and runtime versions remain independently addressable. Signed
+tags, direct fetching, the public Go proxy, and the checksum database are
+verified after publication. A newly announced version may still need a short
+propagation interval before every proxy sees its immutable tag.
 
 For repository development:
 
@@ -113,7 +115,7 @@ and serves it through `http://127.0.0.1:7331` with local-only reload
 diagnostics. That is a Cole-shaped convenience, not a production server or a
 requirement. Take the paved path—or don't.
 
-Beta 2 also provides a standard, editor-neutral language server. It analyzes
+Hime-san also provides a standard, editor-neutral language server. It analyzes
 unsaved overlays with the compiler's real parser and context model, but never
 generates, runs Go, executes a project, fetches a module, accesses the network,
 or starts the dev supervisor. See

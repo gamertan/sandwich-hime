@@ -26,41 +26,42 @@ it is not a production-stability promise.
 
 ## Compiler and runtime for RC/final
 
-- [ ] Freeze and machine-check the compiler, CLI, diagnostic, schema, generated,
+- [x] Freeze and machine-check the compiler, CLI, diagnostic, schema, generated,
   and runtime compatibility contracts.
-- [ ] Repeat compiler-owned deterministic golden output across the supported
-  Linux and Go lanes on the exact candidate.
-- [ ] Compile temporary consumer modules using committed Go and only the Apache
+- [x] Repeat compiler-owned deterministic golden output across the supported
+  Linux and macOS Go lanes on the exact candidate.
+- [x] Compile temporary consumer modules using committed Go and only the Apache
   runtime.
-- [ ] Run the parser, delimiter, context, path, and source-map release fuzz
+- [x] Run the parser, delimiter, context, path, and source-map release fuzz
   campaign.
-- [ ] Evidence adversarial escaping and filesystem cases.
-- [ ] Pass test, race, vet, vulnerability, and license gates on the latest two
+- [x] Evidence adversarial escaping and filesystem cases.
+- [x] Pass test, race, vet, vulnerability, and license gates on the latest two
   supported Go lines.
-- [ ] Reproduce signed compiler/runtime release artifacts, checksums, and SBOMs.
+- [x] Reproduce compiler/runtime release artifacts, checksums, and SBOMs; sign
+  and notarize the macOS distribution outside runner authority.
 
 ## Development supervisor for RC/final
 
-- [ ] Generation/build/start/health failures keep the previous healthy server
+- [x] Generation/build/start/health failures keep the previous healthy server
   live.
-- [ ] SSE reconnect/reload and mapped overlay diagnostics pass browser-level
+- [x] SSE reconnect/reload and mapped overlay diagnostics pass browser-level
   tests.
-- [ ] CSP hash injection, fragment/API/download exclusion, and cache disabling
+- [x] CSP hash injection, fragment/API/download exclusion, and cache disabling
   pass.
-- [ ] Replaced and interrupted child processes leave no descendants on
+- [x] Replaced and interrupted child processes leave no descendants on
   supported systems.
 
 ## Repository-owned release evidence
 
-- [ ] Differentially test contextual escaping against Go's documented
+- [x] Differentially test contextual escaping against Go's documented
   `html/template` safety baseline.
-- [ ] Reproduce repository-owned synthetic benchmark cases and methodology from
+- [x] Reproduce repository-owned synthetic benchmark cases and methodology from
   a clean checkout.
-- [ ] Review generated output for stable provenance, source mappings, and
+- [x] Review generated output for stable provenance, source mappings, and
   absence of compiler-license headers.
-- [ ] Document the production boundary: committed generated Go plus the Apache
+- [x] Document the production boundary: committed generated Go plus the Apache
   runtime, with no compiler or development supervisor in the deployed binary.
-- [ ] Keep unsupported or unmeasured performance and production claims out of
+- [x] Keep unsupported or unmeasured performance and production claims out of
   release materials.
 
 ## Final public launch
@@ -69,9 +70,9 @@ it is not a production-stability promise.
   contribution process, and pre-registration trademark terms.
 - [ ] Complete name clearance, security-mailbox recovery, release signing, and
   two-person credential recovery.
-- [ ] Verify `gamertan.com` vanity metadata and documented installs from clean
+- [ ] Verify `gamertan.com` vanity metadata and documented RC installs from clean
   machines.
 - [ ] Confirm the sanitized public Gitea source contains no private paths,
   identifiers, history, or unsupported claims.
-- [ ] Publish and observe a signed RC on the supported Linux/amd64 target.
+- [ ] Publish and observe signed RC artifacts on Linux/amd64 and Darwin/arm64.
 - [ ] Publish `sando/v1.0.0`, then `v1.0.0`, without moving either tag.
