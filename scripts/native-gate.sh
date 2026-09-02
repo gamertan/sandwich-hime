@@ -38,13 +38,13 @@ mkdir -p -- "$output"
 ./scripts/check-licenses.sh
 ./scripts/test-public-snapshot.sh
 HIMESAN_RACE=1 ./scripts/verify.sh
-go test ./internal/compiler -run '^$' -fuzz '^FuzzCompileNeverPanics$' -fuzztime=15s
-go test ./internal/compiler -run '^$' -fuzz '^FuzzGoDelimiterNeverPanics$' -fuzztime=15s
-go test ./internal/lsp -run '^$' -fuzz '^FuzzFrameReaderNeverPanics$' -fuzztime=15s
-go test ./internal/lsp -run '^$' -fuzz '^FuzzDocumentPositionNeverPanics$' -fuzztime=15s
+go test ./internal/compiler -run '^$' -fuzz '^FuzzCompileNeverPanics$' -fuzztime=15s -parallel=1
+go test ./internal/compiler -run '^$' -fuzz '^FuzzGoDelimiterNeverPanics$' -fuzztime=15s -parallel=1
+go test ./internal/lsp -run '^$' -fuzz '^FuzzFrameReaderNeverPanics$' -fuzztime=15s -parallel=1
+go test ./internal/lsp -run '^$' -fuzz '^FuzzDocumentPositionNeverPanics$' -fuzztime=15s -parallel=1
 (
 	cd sando
-	go test -run '^$' -fuzz '^FuzzWriteURLPolicy$' -fuzztime=15s
+	go test -run '^$' -fuzz '^FuzzWriteURLPolicy$' -fuzztime=15s -parallel=1
 )
 go run golang.org/x/vuln/cmd/govulncheck@v1.6.0 ./...
 (

@@ -245,13 +245,13 @@ done
 HIMESAN_RACE=1 ./scripts/verify.sh
 
 printf '\n==> bounded compiler fuzz gates\n'
-go test ./internal/compiler -run '^$' -fuzz '^FuzzCompileNeverPanics$' -fuzztime=20s
-go test ./internal/compiler -run '^$' -fuzz '^FuzzGoDelimiterNeverPanics$' -fuzztime=20s
-go test ./internal/lsp -run '^$' -fuzz '^FuzzFrameReaderNeverPanics$' -fuzztime=20s
-go test ./internal/lsp -run '^$' -fuzz '^FuzzDocumentPositionNeverPanics$' -fuzztime=20s
+go test ./internal/compiler -run '^$' -fuzz '^FuzzCompileNeverPanics$' -fuzztime=20s -parallel=1
+go test ./internal/compiler -run '^$' -fuzz '^FuzzGoDelimiterNeverPanics$' -fuzztime=20s -parallel=1
+go test ./internal/lsp -run '^$' -fuzz '^FuzzFrameReaderNeverPanics$' -fuzztime=20s -parallel=1
+go test ./internal/lsp -run '^$' -fuzz '^FuzzDocumentPositionNeverPanics$' -fuzztime=20s -parallel=1
 (
 	cd sando
-	go test -run '^$' -fuzz '^FuzzWriteURLPolicy$' -fuzztime=20s
+	go test -run '^$' -fuzz '^FuzzWriteURLPolicy$' -fuzztime=20s -parallel=1
 )
 
 printf '\n==> vulnerability scan (pinned golang.org/x/vuln v1.6.0)\n'

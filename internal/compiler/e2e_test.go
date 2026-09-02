@@ -172,7 +172,7 @@ func buildHimesanBinary(t *testing.T, repositoryRoot, name, linkerFlags string) 
 		name += ".exe"
 	}
 	path := filepath.Join(t.TempDir(), name)
-	arguments := []string{"build", "-trimpath"}
+	arguments := []string{"build", "-buildvcs=false", "-trimpath"}
 	if linkerFlags != "" {
 		arguments = append(arguments, "-ldflags", linkerFlags)
 	}
