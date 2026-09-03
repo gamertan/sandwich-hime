@@ -111,12 +111,12 @@ b188917e258890e6b6e4840a6fd946fc9a77cabc2068da3764f221e4a6a5df97  ./sando/write_
 2d152851bc77f6eb5ca842a8021cde386a3cae91db819cd99cedc31b3b62518f  ./scripts/README.md
 81ab4c10a436bc9b345828a55c2fe446f297fa6cfd1debfe95e1082b6e28c969  ./scripts/check-licenses.sh
 3adba1428df83d6180d4fa3c683f0604dc7cdc0c4358f3dae7595189cc40f949  ./scripts/export-public-snapshot.sh
-1fe46704864c453ea146947393c7de67ca1265f7c43c42082a419c59f0c6eeac  ./scripts/native-gate.sh
+f391ac912cdeb6b139d4feaec29a992cb53faea0fc4bbe805fd380450b238f7c  ./scripts/native-gate.sh
 a038a002f0c895fef38a7265bcb7df01efdda57de5c4d36d0dc7c8e377798a95  ./scripts/package-macos.sh
 7d1e3606f3159e0d5d222bb5b02171ad90bb2c42b0e041042dcf8e6b7692c40a  ./scripts/package-native.sh
 1fddbdf81e86f4310a603cedd0f24a39d6c62d810c7e1e2e6c5f7bff1d1d4198  ./scripts/public-snapshot-lib.sh
 b320a95ca85f48941ee956fde1eda46e0d9bc664da21d13c5f65a8f623063ed5  ./scripts/public-snapshot.allow
-b3c9504cb2feb8444bbf5fcc461feec388cbe4ff803c6dd09d99194ecd1442dc  ./scripts/release-check.sh
+8fa4ee6c6ae80c261a8f5c1ff18a89185b4ce6472ccb577e1daf61afaa146e14  ./scripts/release-check.sh
 494cf5573cc6a891d4243ec01a98c43263de75090cb3b55c9c398e545b1ec1a8  ./scripts/sign-notarize-macos.sh
 7c65325664e95df1a63262bc440a599fb799b36123a68c5cc26cfb81ddd08efa  ./scripts/test-public-snapshot.sh
 39a80708b1c1a64c837032c6570e77dea28b2c6e6058eea40efac63ad5827431  ./scripts/verify-consumer.sh
