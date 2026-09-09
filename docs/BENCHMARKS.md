@@ -2,6 +2,10 @@
 
 # Benchmark policy
 
+The [RC1 measurement report](BENCHMARK_RESULTS.md) records the observed values,
+hardware, scope and original samples. Historical RC results must not be relabelled
+as measurements of a later release candidate.
+
 Benchmarks compare equivalent typed views and output against Go's `html/template` baseline. Reports include hardware, operating system, Go version, repository commit, dataset identity, exact commands, warmup/run counts, `ns/op`, bytes and allocations per operation, end-to-end response latency where relevant, output size, and statistical method.
 
 The v1 gate is no material regression against equivalent repository-owned

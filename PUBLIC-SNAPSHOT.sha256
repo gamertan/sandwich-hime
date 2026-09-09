@@ -2,7 +2,7 @@
 658ba4b4645426f8c3249337f47669074ae9249a31703dcd9ea4c1afec45e20b  ./.gitattributes
 d5ae411fb422b2388cac220f9655900eecbc49ece961b2bb2a6610347733b756  ./.gitignore
 98f663ab0f376b4550094465ec2e06192d1e0b0707604ec6794f20b0d10952c1  ./AI_CONTRIBUTIONS.md
-954fb577484d5ca95f3fedb80d967ec6012ed4ed24fb7d999174f1b163697c80  ./CHANGELOG.md
+eb5a0df1c6c3392d50e7df2a45af25c7e1586edd02800a932b6e1429c051d852  ./CHANGELOG.md
 b696cab3cf482ff5737501371cca749369b119351383e698ced42bcdbcbfc8ae  ./CLA.md
 797e884105738fc931b585b695424f43ec5f296d8ab9bba5191b096e87a9e2c2  ./CONTRIBUTING.md
 86d7e49d5d90e0f98a4ad0f14b5d8b9f11ed09a1e29ecdf27388316b28e195e8  ./COPYRIGHT
@@ -21,6 +21,7 @@ d566b8b27777cb33209602df81d654a94072ad875440c089ac41764a349b6c17  ./SPEC.md
 3d9e680cdfe147df7cc9ff29ecf1d3e566e9cd559ae84db4880e559b9c7c7205  ./TRADEMARKS.md
 e2ce8cbc43e4575984839b61332207f7c90e2848fa270d4c68dbc5fc394f28e7  ./cmd/himesan-release/main.go
 9dda7402f76b38d417981f9e7658880b592c282c00163a3fdbfb0ab55e1edcba  ./cmd/himesan/contract_test.go
+d53548ffa05a386bd869cf6b70d1ebe3397eb49bf0c05d9dc48ed94ed85a052c  ./cmd/himesan/doc.go
 8cd8db68e1300f9b78cc7235855853cbc7aeb499a921419e23a22e4d22826fcb  ./cmd/himesan/main.go
 8c53127437cd8a77676fdbcdf62f6dd9346e533665bf7d5ac32f103839a24974  ./cmd/himesan/main_test.go
 de004164324a640555256a91ca21a02be163bd3d231b38f08f8539c9a77ef665  ./contracts/diagnostic-codes-v1.txt
@@ -30,7 +31,8 @@ e6fb36b274bf44143497b2af454e9ee0fabe6122f935cbf97e785a003277e211  ./contracts/hi
 09e574ed55e3a48fa117936465d3de887686cf3f2a5c4231cf598ff30e4b1a75  ./contracts/himesan-operation-output-v1.schema.json
 7679c9908266811a4336be9698982e58ffedecedf2c340b082bf5dcdef1554dd  ./contracts/himesan-version-output-v1.schema.json
 1ecbba46f8b1b2d548a01d7e98afae17b2dd17a814338ff1f88db885655d1c07  ./docs/ARCHITECTURE.md
-9e4f5a80afbffe51dda3e7f9fa5221e3ef4ca516c4b7f7ca33b61ac97ff213bb  ./docs/BENCHMARKS.md
+c26f1f2030f0661aaf3bab963efc132aa63e8fae61be05ff18b4c9c8bc35cb0d  ./docs/BENCHMARKS.md
+015e15c7b00edd0f5d3d4906745f0a6def526cb66422aa27eb8b5c6a935d9e3d  ./docs/BENCHMARK_RESULTS.md
 5c3a62fed80ca28d56558b8c75e8b5be8ba7d2554127adf4609d96da314e85b0  ./docs/BRAND.md
 60f0c1257cfce8388a252a105042be57c2978820d37ef81e46c6d3a49474fde3  ./docs/COMPATIBILITY.md
 d1b4ef192e02b59a9d8d0eb3b1072392e633116433fa308f6ca9bbe17b75e213  ./docs/DEVELOPMENT_SERVER.md
@@ -115,7 +117,7 @@ f391ac912cdeb6b139d4feaec29a992cb53faea0fc4bbe805fd380450b238f7c  ./scripts/nati
 a038a002f0c895fef38a7265bcb7df01efdda57de5c4d36d0dc7c8e377798a95  ./scripts/package-macos.sh
 7d1e3606f3159e0d5d222bb5b02171ad90bb2c42b0e041042dcf8e6b7692c40a  ./scripts/package-native.sh
 1fddbdf81e86f4310a603cedd0f24a39d6c62d810c7e1e2e6c5f7bff1d1d4198  ./scripts/public-snapshot-lib.sh
-b320a95ca85f48941ee956fde1eda46e0d9bc664da21d13c5f65a8f623063ed5  ./scripts/public-snapshot.allow
+4fa75caba7d96db619006b2d961da726e5a5c44c724a73a64bb9770c542d7e17  ./scripts/public-snapshot.allow
 8fa4ee6c6ae80c261a8f5c1ff18a89185b4ce6472ccb577e1daf61afaa146e14  ./scripts/release-check.sh
 494cf5573cc6a891d4243ec01a98c43263de75090cb3b55c9c398e545b1ec1a8  ./scripts/sign-notarize-macos.sh
 7c65325664e95df1a63262bc440a599fb799b36123a68c5cc26cfb81ddd08efa  ./scripts/test-public-snapshot.sh

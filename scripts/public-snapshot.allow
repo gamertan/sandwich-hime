@@ -36,6 +36,7 @@ contracts/himesan-operation-output-v1.schema.json
 contracts/himesan-version-output-v1.schema.json
 docs/ARCHITECTURE.md
 docs/BENCHMARKS.md
+docs/BENCHMARK_RESULTS.md
 docs/BRAND.md
 docs/COMPATIBILITY.md
 docs/DEVELOPMENT_SERVER.md
