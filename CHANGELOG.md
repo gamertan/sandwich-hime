@@ -8,7 +8,11 @@ one coordinated release.
 
 ## Unreleased
 
-No changes have been accepted after the first v1 release candidate.
+### Documentation
+
+- Give the installable `himesan` command its own Go package overview covering
+  installation, generation, read-only checking, local development, editor
+  integration, and machine-readable operational contracts.
 
 ## v1.0.0-rc.1 — 2026-08-24
 

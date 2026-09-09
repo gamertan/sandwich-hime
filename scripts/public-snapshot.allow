@@ -24,6 +24,7 @@ SECURITY.md
 SPEC.md
 TRADEMARKS.md
 cmd/himesan/contract_test.go
+cmd/himesan/doc.go
 cmd/himesan/main.go
 cmd/himesan/main_test.go
 cmd/himesan-release/main.go
