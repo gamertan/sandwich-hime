@@ -66,13 +66,17 @@ it is not a production-stability promise.
 
 ## Final public launch
 
-Final-release preparation is active. Preserve the existing reviewed public
-history and append allowlisted updates; keep operator and archival records
-outside the public snapshot. Completed native and signing evidence remains
-bound to its exact candidate, not automatically to a later documentation or
-export-tool update. Final tags and artifacts have not been published.
+Version 1.0.0 was published on September 9, 2026 from public commit
+`d978994b274db223370ad15c8291230e1b60d9ca`. The signed runtime tag preceded the
+signed compiler tag; both are immutable. The
+[canonical release](https://gitea.speelman.ca/gamertan/sandwich-hime/releases/tag/v1.0.0)
+provides the notarized Apple Silicon DMG and Linux/amd64 archive with checksums.
+All four maintained native/toolchain lanes and final preflight passed. Fresh
+runtime-first direct and public-proxy/checksum-database installs passed on
+macOS/arm64 and Linux/amd64. Evidence remains bound to that source, not to later
+documentation commits. Private development and archival history stays private.
 
-Use [RELEASE.md](RELEASE.md) for the remaining final-publication requirements.
+Use [RELEASE.md](RELEASE.md) for subsequent immutable releases.
 Passing CI is evidence for that review, not an automatic publication decision.
 
 - [x] Finalize the maintainer-approved individual [contribution agreement](CLA.md)
@@ -88,19 +92,20 @@ Passing CI is evidence for that review, not an automatic publication decision.
   primary project identity and Hime-san as its tool name. This is acceptance of
   the documented name-review limitations, not formal trademark clearance,
   completed similarity analysis or a registration requirement.
-- [ ] Complete final security/signing readiness review. Distinguish successful
+- [x] Complete final security/signing readiness review. Distinguish successful
   signing from the explicitly deferred recovery drills below.
 - [x] Verify `gamertan.com` vanity metadata and documented RC installs using clean
-  direct-fetch and public-proxy caches. Final-version installs remain post-tag
-  checks; an independent Mac installation is an accepted follow-up below.
-- [ ] Confirm the sanitized public Gitea source contains no private paths,
+  direct-fetch and public-proxy caches. Final-version installs also passed after
+  publication on both maintained platforms; an independent Mac installation
+  remains an accepted follow-up below.
+- [x] Confirm the sanitized public Gitea source contains no private paths,
   identifiers, history, or unsupported claims.
 - [x] Publish signed RC.1 artifacts on Linux/amd64 and Darwin/arm64.
 - [x] Record the maintainer's v1 acceptance of existing live dogfooding despite
   missing timed checkpoint notes. This is an explicit assurance-gap acceptance,
   not reconstructed reviews or a claim of measured error-free operation. Missing
   notes alone do not restart the observation period or block release.
-- [ ] Publish `sando/v1.0.0`, then `v1.0.0`, without moving either tag.
+- [x] Publish `sando/v1.0.0`, then `v1.0.0`, without moving either tag.
 
 ## Accepted assurance follow-ups
 
