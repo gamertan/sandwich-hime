@@ -66,13 +66,51 @@ it is not a production-stability promise.
 
 ## Final public launch
 
-- [ ] Complete final human review of ownership notices, output permission, DCO
-  contribution process, and pre-registration trademark terms.
-- [ ] Complete name clearance, security-mailbox recovery, release signing, and
-  two-person credential recovery.
-- [ ] Verify `gamertan.com` vanity metadata and documented RC installs from clean
-  machines.
+Final-release preparation is active. Preserve the existing reviewed public
+history and append allowlisted updates; keep operator and archival records
+outside the public snapshot. Completed native and signing evidence remains
+bound to its exact candidate, not automatically to a later documentation or
+export-tool update. Final tags and artifacts have not been published.
+
+Use [RELEASE.md](RELEASE.md) for the remaining final-publication requirements.
+Passing CI is evidence for that review, not an automatic publication decision.
+
+- [x] Finalize the maintainer-approved individual [contribution agreement](CLA.md)
+  version 1.0 and explicit prospective acceptance process. Preserve the AGPL
+  compiler, Apache runtime, chosen application license and existing DCO/output
+  grants. Publication is not contributor acceptance or retroactive assent.
+  The maintainer chose to proceed without an outside legal-review prerequisite;
+  see [the rationale](docs/LICENSING_INTENT.md).
+- [x] Record the maintainer's approval to proceed with ownership notices, output
+  permission, reciprocal contribution terms and pre-registration naming scope.
+  This is not a statement of external legal review or guaranteed enforceability.
+- [x] Record the maintainer's decision to proceed with Sandwich Hime as the
+  primary project identity and Hime-san as its tool name. This is acceptance of
+  the documented name-review limitations, not formal trademark clearance,
+  completed similarity analysis or a registration requirement.
+- [ ] Complete final security/signing readiness review. Distinguish successful
+  signing from the explicitly deferred recovery drills below.
+- [x] Verify `gamertan.com` vanity metadata and documented RC installs using clean
+  direct-fetch and public-proxy caches. Final-version installs remain post-tag
+  checks; an independent Mac installation is an accepted follow-up below.
 - [ ] Confirm the sanitized public Gitea source contains no private paths,
   identifiers, history, or unsupported claims.
-- [ ] Publish and observe signed RC artifacts on Linux/amd64 and Darwin/arm64.
+- [x] Publish signed RC.1 artifacts on Linux/amd64 and Darwin/arm64.
+- [x] Record the maintainer's v1 acceptance of existing live dogfooding despite
+  missing timed checkpoint notes. This is an explicit assurance-gap acceptance,
+  not reconstructed reviews or a claim of measured error-free operation. Missing
+  notes alone do not restart the observation period or block release.
 - [ ] Publish `sando/v1.0.0`, then `v1.0.0`, without moving either tag.
+
+## Accepted assurance follow-ups
+
+- [ ] Exercise the published Mac download/install and CLI on independent Apple
+  Silicon hardware when available. The maintainer accepted this gap for v1 and
+  prefers an independent machine over another profile on the development Mac.
+  Record the result in documentation; fix any reproduced defect in an appropriate
+  patch release. This is not a current launch blocker or completed install test.
+- [ ] Exercise offline signing-key restoration and independent second-person
+  credential recovery/verification. The maintainer explicitly deferred these
+  for v1.0.0; they are not launch blockers or completed recovery evidence. Loss
+  of the current credentials or operator access remains an incident-response
+  risk until these drills and independent access are proven.

@@ -2,13 +2,48 @@
 
 # Changelog
 
-Sandwich Hime follows semantic versioning after final v1. Compiler and nested
+Sandwich Hime follows semantic versioning from v1.0.0. Compiler and nested
 runtime releases are versioned independently and listed together when they form
 one coordinated release.
 
-## Unreleased
+## v1.0.0 — 2026-09-09
+
+The coordinated compiler `v1.0.0` and runtime `sando/v1.0.0` release retains
+runtime ABI `sando.v1`. Canonical Gitea tags and release announcements establish
+version and artifact availability.
+
+### Stable release contract
+
+- Apply the v1 compatibility policy to the source syntax, generated public API,
+  runtime API, CLI, diagnostics, and schemas on the maintained Linux/amd64 and
+  Apple Silicon macOS/arm64 targets.
+- Promote runtime-first installation instructions to the exact final versions.
+- Retain best-effort security fixes for the latest stable v1 patch, without an
+  SLA, independent-audit claim, or expanded platform support promise.
+
+### Publication tooling
+
+- Reject references to excluded operator documentation in exported Markdown,
+  with positive and negative regression fixtures.
+- Keep operator/archive continuity out of the public roadmap and clarify
+  stable public publication history, immutable version tags and separate
+  private development storage.
 
 ### Documentation
+
+- Finalize the version 1.0 prospective individual CLA with recorded-license
+  grants, contributor safeguards, reciprocal stewardship commitments, and
+  explicit paired contributor/Steward acceptance for future contributions.
+  This does not assert that any contributor has signed, apply retroactively,
+  assign copyright, or require signatures to use or learn from the project.
+  Document commercial freedom and the compiler/runtime/application boundary
+  without changing the software licenses.
+- Clarify Sandwich Hime as the primary identity and Hime-san as its tool name.
+- Retain DCO sign-off and existing output-permission records alongside the
+  prospective CLA process; preserve prior contributions under their recorded
+  terms.
+- Record the maintainer's explicit v1.0.0 deferral of offline restoration and
+  independent second-person recovery without representing those drills as done.
 
 - Give the installable `himesan` command its own Go package overview covering
   installation, generation, read-only checking, local development, editor

@@ -4,6 +4,11 @@
 
 “Sandwich Hime,” “Hime-san,” the Sandwich Hime flag, mascot, and official project artwork identify the project stewarded by Cole Speelman. Code licenses do not grant trademark rights, and this policy does not limit anyone's rights to use the code under those licenses.
 
+Sandwich Hime is the primary project identity. Hime-san names the tool within
+that project, not a separate framework brand. The project does not claim the
+word “Hime” in general. This naming scope is not a statement of registration
+or a conclusion about confusing similarity in any jurisdiction.
+
 Truthful, non-confusing statements such as “Built with Sandwich Hime,” “compatible with Sandwich Hime,” and unmodified community badges are welcome. They must not imply sponsorship, certification, or official status.
 
 If a modified distribution uses these project marks, it should use a distinct primary product name, clearly identify its changes, and avoid official artwork or presentation that could confuse users about origin. A fork that does not use the project marks is not restricted by this policy. Either kind of fork may truthfully describe compatibility.

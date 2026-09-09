@@ -77,6 +77,33 @@ mkdir -p "$safe_tree"
 printf 'ordinary reviewed source\n' >"$safe_tree/source.go"
 snapshot_validate_export_tree "$safe_tree"
 
+# Public prose and ordinary public links are allowed. Source-code policy
+# fixtures may name excluded roots without becoming documentation links.
+printf '%s\n' 'Private development records remain separate.' \
+	'[Releases](docs/releases.md)' '[History](https://example.invalid/history/releases)' \
+	'[Design](private-design.md)' >"$safe_tree/README.md"
+printf '%s\n' '// Reject private/notes.md in an export policy.' >"$safe_tree/scanner_test.go"
+snapshot_validate_export_tree "$safe_tree"
+
+markdown_tree=$temporary/markdown
+mkdir -p "$markdown_tree"
+for reference in '[Audit](private/audit.md)' '[Audit](./private/audit.md#resume)' \
+	'[Audit](../../private/audit.md)' '[audit]: ../private/audit.md' '[audit]:private/audit.md' \
+	'`private/audit.md`' '<a href="private/audit.md">Audit</a>' \
+	'[Archive](history/story.md)' '[Audit](PRIVATE/AUDIT.md)'; do
+	printf '%s\n' "$reference" >"$markdown_tree/README.Md"
+	if snapshot_validate_export_tree "$markdown_tree" >"$temporary/markdown.log" 2>&1; then
+		echo "excluded documentation reference was accepted: $reference" >&2
+		exit 1
+	fi
+	grep -q 'excluded documentation reference in README.Md' "$temporary/markdown.log"
+done
+mv "$markdown_tree/README.Md" "$markdown_tree/notes.markdown"
+if snapshot_validate_export_tree "$markdown_tree" >/dev/null 2>&1; then
+	echo "excluded reference in .markdown documentation was accepted" >&2
+	exit 1
+fi
+
 empty_tree=$temporary/empty
 mkdir -p "$empty_tree"
 : >"$empty_tree/empty.txt"

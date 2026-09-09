@@ -42,12 +42,15 @@ request object, or production server.
 
 ## Status
 
-`v1.0.0-rc.1` is the current release candidate for both the compiler and the
-independently tagged runtime. The intended v1 source syntax, generated API,
-runtime API, CLI, diagnostics, and schemas are frozen except for
-release-blocking corrections. It remains a semantic-version prerelease while
-the project completes its public observation period; a finding is fixed in a
-new RC rather than by moving either tag.
+This is the source and documentation for compiler `v1.0.0` and independently
+tagged runtime `sando/v1.0.0`. The v1 source syntax, generated API, runtime
+API, CLI, diagnostics, and schemas follow the
+[v1 compatibility policy](docs/COMPATIBILITY.md). Corrections receive new
+immutable versions rather than moving a published tag.
+
+The commands below target that final pair. Canonical Gitea tags and release
+announcements establish version and artifact availability; check them before
+installing a newly announced version.
 
 Linux/amd64 and Apple Silicon macOS/arm64 are the maintained v1 execution and
 release targets. Native release evidence runs with pinned Go 1.26.7 and Go
@@ -64,13 +67,13 @@ decisions on both supported native targets.
 Inside an application module, add the small runtime first:
 
 ```sh
-go get gamertan.com/sandwich-hime/sando@v1.0.0-rc.1
+go get gamertan.com/sandwich-hime/sando@v1.0.0
 ```
 
-Then install the matching release-candidate compiler:
+Then install the matching compiler:
 
 ```sh
-go install gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-rc.1
+go install gamertan.com/sandwich-hime/cmd/himesan@v1.0.0
 ```
 
 Keep that runtime-first order. It avoids path-selection ambiguity between the
@@ -81,19 +84,19 @@ does not contain `sando`, seed the exact nested module without clearing the
 global cache, then retry:
 
 ```sh
-go mod download gamertan.com/sandwich-hime/sando@v1.0.0-rc.1
-go get gamertan.com/sandwich-hime/sando@v1.0.0-rc.1
+go mod download gamertan.com/sandwich-hime/sando@v1.0.0
+go get gamertan.com/sandwich-hime/sando@v1.0.0
 ```
 
 For a reproducible one-off or classroom invocation that does not depend on the
 learner's `PATH`:
 
 ```sh
-go run gamertan.com/sandwich-hime/cmd/himesan@v1.0.0-rc.1 --help
+go run gamertan.com/sandwich-hime/cmd/himesan@v1.0.0 --help
 ```
 
 The runtime implementation retains ABI `sando.v1` and zero third-party module
-requirements. The coordinated RC tags make the intended v1 pair explicit even
+requirements. The coordinated v1 tags make the release pair explicit even
 though compiler and runtime versions remain independently addressable. Signed
 tags, direct fetching, the public Go proxy, and the checksum database are
 verified after publication. A newly announced version may still need a short
@@ -123,9 +126,8 @@ or starts the dev supervisor. See
 Skill and VS Code preview live in the separate
 [tooling repository](https://gitea.speelman.ca/gamertan/sandwich-hime-tooling).
 
-Final-v1 installs will use the same paths with `@v1.0.0`. A version is
-advertised as available only after its immutable tags, `gamertan.com`
-metadata, and clean direct-fetch installation have been verified.
+A version is advertised as available only after its immutable tags,
+`gamertan.com` metadata, and clean direct-fetch installation have been verified.
 
 ## The contract
 

@@ -16,6 +16,11 @@ Linux/amd64 and macOS/arm64.
 - `sign-notarize-macos.sh` is a deliberately manual boundary. It requires the explicitly approved unsigned archive digest, uses Cole's Developer ID and Keychain-held notary profile, regenerates provenance and checksums for the changed signed Mach-O bytes, and produces a signed, notarized, and stapled DMG. The native runner receives neither credential.
 - `verify-real-browser.sh` is opt-in release evidence. It runs the development client in an actual reviewed Chrome/Chromium binary, exercising CSP-restricted execution, SSE diagnostics, reload, and fragment/API exclusions, then reruns the process cleanup integration cases. Chrome is not a normal build or consumer dependency.
 
+The export scanner also rejects Markdown references to known excluded operator
+documentation roots. It is a bounded publication check, not a complete Markdown
+link checker or a substitute for inspecting the exported diff. Source-code
+fixtures can still describe the scanner's rejected paths.
+
 The canonical Linux and macOS CI gates run the contract and public-snapshot
 checks plus bounded fuzz sessions for the parser/context compiler, Go-aware
 delimiter scanner, URL policy, and LSP boundaries. The compiler target also

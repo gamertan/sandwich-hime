@@ -29,8 +29,10 @@ portability input but are not v1 release blockers or maintained promises.
 Beta tags are signed, annotated, and immutable. Beta 1 is a source/module
 release installed through the Go toolchain; it does not promise downloadable
 prebuilt binaries. Signed binary artifacts, checksums, SBOMs, reproducible
-archives, and key-recovery rehearsal are mandatory for release candidates and
-final v1.
+archives are mandatory for release candidates and final v1. Offline signing-key
+restoration and independent second-person recovery/verification were explicitly
+deferred by the maintainer for v1.0.0. Record that assurance gap in the release
+review; retain the drills as follow-up work rather than claiming they passed.
 
 ### Release candidate
 
@@ -47,6 +49,12 @@ repository-owned evidence campaign, resolution or explicit acceptance of every
 published assurance gap, and the documented RC observation period. A
 deployment, example, classroom project, or case study in another repository is
 neither imported nor required as release evidence.
+
+For v1.0.0 the maintainer explicitly accepted the missing timed dogfooding-note
+gap and deferred independent Mac installation to available alternate hardware.
+Keep those dispositions visible in `ROADMAP.md`; do not recreate historical
+reviews, call the install tested, or require another local profile as a
+substitute. A reproduced product defect remains distinct from missing notes.
 
 ## Beta 1 publication gates (historical)
 
@@ -166,7 +174,9 @@ being mistaken for the reviewed native receipt set.
 ## Public source and artifacts
 
 Gitea is the only canonical public forge. Public source is exported into a
-separate, sanitized Gitea repository with fresh reviewed history. A sanitized
+separate, sanitized Gitea repository with its own reviewed history. Append
+reviewed publication commits to the existing public main; do not create a new
+orphan history per version or push private development branches into it. A sanitized
 GitHub discovery snapshot may copy reviewed public source, but it is not an
 issue, contribution, release, or module origin and must never receive private
 development refs or an indiscriminate Git mirror. Release binaries and

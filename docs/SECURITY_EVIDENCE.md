@@ -216,7 +216,13 @@ resolution and the public Go proxy after normal proxy propagation. Future
 release decisions require fresh evidence for the maintained Linux/amd64 and
 Darwin/arm64 targets rather than reusing this historical campaign.
 
-## Open assurance gaps
+## Historical pre-RC assurance gaps
+
+The list below preserves the pre-RC assessment, not current completion status.
+RC.1 native verification and artifact publication are recorded in
+`../CHANGELOG.md`; the final-release queue is `../ROADMAP.md`. The v1
+dispositions below distinguish required exact-candidate evidence from explicitly
+accepted recovery deferrals.
 
 - delivery to `security@sandwichhime.com` is owner-confirmed through a
   controlled domain catch-all; encrypted reporting, documented backup, and
@@ -250,8 +256,8 @@ subject to exact-public-candidate review:
 
 | Gap | v1 disposition |
 | --- | --- |
-| Security mailbox delivery, backup, and recovery | Release blocker. Complete the delivery/reply and recovery drill before RC publication. Encrypted reporting may remain optional if the supported confidential channel and its limit are stated accurately. |
-| Artifact signing, provenance, and key recovery | Release blocker. Complete deterministic native artifacts, Developer ID notarization, signed-tag rehearsal, and recovery evidence. |
+| Security mailbox delivery, backup, and recovery | Delivery/reply remains required and is maintainer-confirmed. Offline restoration and independent second-person recovery/verification are explicitly deferred assurance work for v1.0.0, not completed drills. Encrypted reporting may remain optional if the supported confidential channel and its limit are stated accurately. |
+| Artifact signing, provenance, and key recovery | Deterministic native artifacts, Developer ID notarization and signed-tag evidence remain required for the exact release candidate. Offline signing-key restoration and independent second-person recovery/verification are explicitly deferred for v1.0.0; successful signing does not prove recovery. |
 | Maintained native matrix | Release blocker for Linux/amd64 and Darwin/arm64 only. Other architectures and operating systems are explicitly unsupported, not silently untested promises. |
 | Real-browser parser and supervisor evidence | Release blocker. The repository-owned gate covers a generated typed document, parsed structure, hostile-value inertness, and supervisor behavior. Execute it against the exact public candidate on both maintained hosts before publication. |
 | Compiler resource budgets | Accepted v1 boundary. The compiler is a trusted local build tool; operating-system and runner limits own CPU, memory, and input quotas. No hostile-input resource guarantee is made. |

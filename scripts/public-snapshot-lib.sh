@@ -72,6 +72,9 @@ snapshot_validate_export_tree() {
 	local provider_token='AKIA[0-9A-Z]{16}|(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{20,}|glpat-[A-Za-z0-9_-]{20,}|xox[baprs]-[A-Za-z0-9-]{20,}'
 	local private_commit_id='(private development (source|baseline)|private (development )?(commit|source))[^[:cntrl:]]*[0-9a-f]{12,64}'
 	local private_repository='sandwich-hime-''dev'
+	# Known excluded documentation roots, not ordinary prose about private work.
+	# Scope this to Markdown: exported scanner code legitimately names its policy.
+	local private_markdown_ref='(^|[^[:alnum:]_./%-])([.]{1,2}/)*(private|history)/'
 
 	if find "$root" -type l -print -quit | grep -q .; then
 		echo "public snapshot: symbolic links are forbidden" >&2
@@ -117,5 +120,13 @@ snapshot_validate_export_tree() {
 			echo "public snapshot: private repository indicator in $rel" >&2
 			return 1
 		fi
+		case $rel in
+		*.[mM][dD] | *.[mM][aA][rR][kK][dD][oO][wW][nN])
+			if LC_ALL=C grep -Eiq -- "$private_markdown_ref" "$file"; then
+				echo "public snapshot: excluded documentation reference in $rel" >&2
+				return 1
+			fi
+			;;
+		esac
 	done < <(find "$root" -type f -print0 | LC_ALL=C sort -z)
 }

@@ -2,13 +2,12 @@
 
 # Security policy
 
-Sandwich Hime compiler `v1.0.0-rc.1` and runtime
-`sando/v1.0.0-rc.1` are the current release-candidate pair. The intended v1
-interfaces are frozen except for release-blocking corrections while the RC
-completes its public observation period. Security reports are welcome and
-receive best-effort maintainer assessment and fixes while this pair is current.
-This is not an SLA, certification, fitness guarantee, or final-v1 support
-promise.
+This policy covers Sandwich Hime compiler `v1.0.0` and runtime `sando/v1.0.0`
+under the [v1 compatibility policy](docs/COMPATIBILITY.md). The latest published
+stable v1 patch receives best-effort maintainer security assessment and fixes.
+Canonical Gitea tags and release announcements establish availability. The
+published RC.1 pair remains covered until final v1 supersedes it. This policy is
+not an SLA, certification, or fitness guarantee.
 
 The community is invited to help find portability gaps outside the maintained
 Linux/amd64 and Darwin/arm64 targets, but those reports do not create a support
@@ -21,12 +20,14 @@ advisories, and release decisions.
 
 | Version | Security status |
 | --- | --- |
-| `v1.0.0-rc.1` compiler and `sando/v1.0.0-rc.1` runtime | Current release-candidate pair; intended v1 interfaces frozen except for release-blocking corrections; best-effort security assessment and fixes during the RC observation period |
+| `v1.0.0` compiler and `sando/v1.0.0` runtime | Stable v1 line; latest published v1 patch receives best-effort security assessment and fixes |
+| `v1.0.0-rc.1` compiler and `sando/v1.0.0-rc.1` runtime | Published release-candidate pair; covered until final v1 supersedes it |
 | `v1.0.0-beta.2` compiler and `sando/v1.0.0-beta.1` runtime | Superseded evaluation/classroom pair after RC publication |
 | Public `main` | Development source; reports welcome, but no compatibility or production-support promise |
 | Older prereleases | Superseded when a newer prerelease or final version is published; reports are still triaged to determine affected versions |
 
-Prerelease support lasts until it is superseded or explicitly withdrawn in the
+The latest stable v1 patch and current prerelease receive fixes. Prerelease
+support lasts until it is superseded or explicitly withdrawn in the
 supported-version table and release notes. Published tags are immutable. A
 security fix is issued as a new version, never by silently replacing a tag.
 
@@ -59,8 +60,8 @@ ownership, backup, and recovery procedure have been tested.
 ## What to expect
 
 These are best-effort targets for a founder-maintained project, not an SLA.
-They describe maintainer responsibilities; asking the community to test a beta
-does not ask reporters to investigate or remediate it:
+They describe maintainer responsibilities; inviting community testing
+does not make reporters responsible for investigation or remediation:
 
 - acknowledge a report within 7 calendar days;
 - provide an initial severity/scope assessment within 14 calendar days when a
@@ -166,10 +167,11 @@ unsaved overlays, workspace re-indexing, and no generated writes. Source review
 forbids process execution and network-client imports inside the server. Editor
 workspace trust and executable resolution remain editor-client responsibilities.
 
-Beta 1 uses signed annotated source tags but predates the complete artifact
-system. The RC adds signed or checksummed binaries, SPDX SBOMs, reproducible
-archives, and source/build provenance. Those controls establish artifact
-identity and provenance; they do not constitute an independent security audit
-or prove the absence of vulnerabilities.
+Beta 1 used signed annotated source tags but predates the complete artifact
+system. RC.1 introduced signed or checksummed binaries, SPDX SBOMs, reproducible
+archives, and source/build provenance; final-v1 artifacts retain that release
+boundary and require their own exact-version verification. Those controls
+establish artifact identity and provenance; they do not constitute an
+independent security audit or prove the absence of vulnerabilities.
 
 This policy is practical project guidance, not legal advice.

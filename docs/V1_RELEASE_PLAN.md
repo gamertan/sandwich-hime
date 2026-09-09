@@ -16,13 +16,23 @@ releases originate only from the reviewed canonical public tree.
 | Surface | Purpose | History and tags |
 | --- | --- | --- |
 | Private development storage | Working branches, private review records, and historical context | identities and history are not exported; no public release tags |
-| Public Gitea `sandwich-hime` | Canonical sanitized source, contribution venue, module origin, and releases | fresh reviewed history; authoritative immutable `sando/vX.Y.Z` and `vX.Y.Z` tags |
+| Public Gitea `sandwich-hime` | Canonical sanitized source, contribution venue, module origin, and releases | stable reviewed public history; authoritative immutable `sando/vX.Y.Z` and `vX.Y.Z` tags |
 | GitHub `gamertan/sandwich-hime` | Discoverability and a convenient sanitized source snapshot | no private refs, force-mirrors, workflows, contribution authority, release artifacts, or semver tags |
 
 Each public update is exported through the exact committed allowlist, inspected,
-committed as a fresh public snapshot, and compared byte-for-byte with the
-reviewed export. GitHub receives that public tree only. It never receives
-private history or an indiscriminate Git mirror.
+appended as a meaningful publication commit to the existing public `main`, and
+compared byte-for-byte with the reviewed export. Development commits may be
+squashed for publication; do not reset public ancestry for each version, merge
+private history into public branches, or force-push existing releases. Versions
+are immutable tags on that public history, not separate orphan branches.
+Preserve contributor attribution, sign-offs and any output-permission grants
+as required by [CONTRIBUTING.md](../CONTRIBUTING.md).
+
+GitHub receives the reviewed public tree only. It never receives private
+branches, private notes or an indiscriminate Git mirror. Branch names and
+protected branches are not privacy boundaries: private development remains in
+a separate access-controlled repository. The tutorial, tooling and website
+remain independent projects, not archival branches of the compiler.
 
 ## Current readiness
 
@@ -65,9 +75,11 @@ Other demonstrated controls include:
 - byte-identical generated output and independently reproduced release
   archives across the maintained native evidence lanes.
 
-The final immutable tags, clean direct/proxy installation, credential-recovery
-drills, and public observation period remain publication or post-publication
-gates rather than properties that source code can prove by itself.
+The final immutable tags, clean direct/proxy installation and public observation
+review remain publication or post-publication gates rather than properties
+that source code can prove by itself. Offline restoration and second-person
+recovery/verification are explicitly deferred assurance work for v1.0.0, as
+recorded in [ROADMAP.md](../ROADMAP.md).
 
 ## Beta 1 publication lane
 
@@ -143,8 +155,9 @@ Required before security/native release-candidate work is declared complete:
   committed outputs are current under that exact binary.
 - [x] Produce deterministic archives/binaries, checksums, SBOMs, signatures,
   and source/build provenance from a clean sanitized canonical checkout.
-- [ ] Test release-key backup and two-person recovery for Gitea, domains,
-  signing material, and publication instructions.
+- [x] Record the explicit v1.0.0 deferral of offline release-key restoration and
+  independent second-person recovery; retain the drills as assurance follow-ups
+  in [ROADMAP.md](../ROADMAP.md), without claiming they passed.
 - [x] Make evidence gates validate content and commit identity rather than only
   the presence of non-empty files.
 - [ ] Rehearse runtime-first publication and rollback without creating public
@@ -162,7 +175,10 @@ Required before security/native release-candidate work is declared complete:
 5. Operate the official Sandwich Hime website on the RC runtime for a 14-day
    observation period with no unresolved Hime render, security, accessibility,
    or rollback regression. This is product dogfooding, not a dependency on
-   another application's private repository.
+   another application's private repository. For v1.0.0 the maintainer accepted
+   the existing live-use experience despite missing timed checkpoint notes;
+   see [ROADMAP.md](../ROADMAP.md). This does not assert the missing reviews
+   occurred or waive a reproduced Hime defect.
 6. Fix findings in a new RC; restart the observation period when the affected
    boundary warrants it.
 7. Finalize the changelog, supported-version table, migration notes, release

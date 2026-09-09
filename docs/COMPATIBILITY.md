@@ -2,22 +2,20 @@
 
 # Compatibility policy
 
-## Current release-candidate contract
+## v1 release contract
 
-Compiler `v1.0.0-rc.1` and runtime `sando/v1.0.0-rc.1` are the current
-semantic-version prereleases. The intended v1 source syntax, generated API,
-runtime API, CLI behavior, diagnostics, and configuration schemas are frozen
-except for release-blocking corrections. Every correction receives a new
-immutable RC, documentation, and deterministic generation evidence.
+This document defines the compatibility contract for compiler `v1.0.0` and
+runtime `sando/v1.0.0`. Canonical Gitea tags and release announcements establish
+version and artifact availability. Every correction receives a new immutable
+version, documentation, and deterministic generation evidence.
 
-The RC is not yet the final-v1 support commitment. Maintainers accept and
-triage security reports within the boundary described in
+Maintainers accept and triage security reports within the boundary described in
 [SECURITY.md](../SECURITY.md). A security correction may intentionally fail
 closed when retaining behavior would contradict a published safety guarantee.
 
-## Final-v1 contract
+## v1 compatibility contract
 
-At final v1, semantic versions apply independently to the compiler and
+For v1, semantic versions apply independently to the compiler and
 `sando` runtime. Generated files record the exact compiler version and
 required runtime ABI. Patch releases do not intentionally change accepted
 source semantics or generated public signatures. Minor releases may add
@@ -35,7 +33,7 @@ codes, `himesan.json`, and generated provenance. English diagnostic wording,
 internal packages, temporary paths, and compiler implementation details are not
 stable API.
 
-An API deprecated after final v1 remains available for the rest of the v1
+An API deprecated during v1 remains available for the rest of the v1
 major line and may be removed in v2. A security correction may fail closed in
 a patch release when retaining old behavior would contradict a published safety
 guarantee; that exception receives an advisory and migration note rather than a
@@ -58,7 +56,7 @@ support change is announced in release notes before it takes effect.
 The following table is retained because the tests genuinely ran. It records a
 point-in-time Beta 1 campaign and does not define the current support matrix.
 
-The current public evidence is the exact Beta 1 source at commit
+The historical Beta 1 evidence is bound to source commit
 `b7a84054d755e42285e50298e41e47f06a8325a5` (tree
 `be9e118e38dfebed19f60403ededdadabe07d2aa`):
 
@@ -80,7 +78,7 @@ module-cache path-selection ambiguity observed in the reverse order.
 
 ## Portability feedback
 
-Developers may try the beta on an unsupported target and report useful gaps. A
+Developers may try Hime-san on an unsupported target and report useful gaps. A
 good report includes the operating system and architecture, `go version`, the
 exact command, and a minimal reproduction or diagnostic output. Ordinary
 portability reports belong on the canonical Gitea project. Suspected
